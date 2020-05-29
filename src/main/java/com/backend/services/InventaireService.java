@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -96,6 +97,7 @@ public class InventaireService {
 		document.save("contratCompte_"+".pdf");
 		document.close();
 		
+		inventaire.setDate(LocalDateTime.now());		
 		rep.save(inventaire);
 	}
 
