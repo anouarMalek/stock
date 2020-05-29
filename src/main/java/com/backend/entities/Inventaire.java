@@ -1,9 +1,8 @@
-package com.backend.models;
+package com.backend.entities;
 
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,12 +19,15 @@ public @Data class Inventaire {
 		@GeneratedValue(strategy=GenerationType.IDENTITY)
 		@Column(name="ID_INVTR")
 		Long id;
+		
 		@Column(name="DATE_INVTR")
 		LocalDateTime date;
+		
 		@Column(name="DESCRIPTION_INVTR")
 		String description;
+		
 		@JoinColumn(name="STOCK_INVTR")
-		@ManyToOne(targetEntity=Stock.class, fetch=FetchType.EAGER)
+		@ManyToOne
 		Stock stock;
 
 }

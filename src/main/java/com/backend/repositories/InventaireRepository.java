@@ -5,8 +5,8 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.backend.models.Inventaire;
-import com.backend.models.Stock;
+import com.backend.entities.Inventaire;
+import com.backend.entities.Stock;
 
 public interface InventaireRepository extends JpaRepository<Inventaire, Long> {
 

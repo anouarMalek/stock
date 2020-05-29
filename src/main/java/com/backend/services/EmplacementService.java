@@ -1,13 +1,15 @@
 package com.backend.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.backend.exceptions.AlreadyExistsException;
+import com.backend.entities.Emplacement;
+import com.backend.entities.Stock;
+import com.backend.exceptions.ConflictException;
 import com.backend.exceptions.NotFoundException;
-import com.backend.models.Emplacement;
 import com.backend.repositories.EmplacementRepository;
 
 @Service
@@ -18,21 +20,37 @@ public class EmplacementService {
 	
 
 	//Liste des emplacements
-	public List<Emplacement> getEmplacements() throws NotFoundException
+	public List<Emplacement> getEmplacements(Long id) throws NotFoundException
 	{
 		
-		List<Emplacement> emplacements = rep.findAll();
-		if(emplacements.isEmpty()) throw new NotFoundException("Aucun emplacement trouvé");		
+		List<Emplacement> emplacements = new ArrayList<Emplacement>();
+		if(id!=null) 
+			emplacements.add(rep.findById(id).orElseThrow(() -> new NotFoundException("Aucun emplacement avec l'id "+id+" n'existe")));
+								
+		else emplacements = rep.findAll();
+			if(emplacements.isEmpty()) throw new NotFoundException("Aucun emplacement trouvé");		
 		
 		return emplacements;
 	}
 	
 	
+	
+	//Stock
+	public Stock getStock(Long id) throws NotFoundException
+	{
+		Emplacement emplacement = rep.findById(id)
+				.orElseThrow(() -> new NotFoundException("Aucun emplacement avec l'id "+id+" n'existe"));
+			
+		if(emplacement.getStock()== null) throw new NotFoundException("Stock pas encore créé pour cette emplacement.");
+		return emplacement.getStock();
+	}
+	
+	
 	//ajouter une emplacement
-	public void addEmplacement(Emplacement emplacement) throws AlreadyExistsException
+	public void addEmplacement(Emplacement emplacement) throws ConflictException
 	{
 		if(rep.findByDesignation(emplacement.getDesignation()).isPresent()) 
-			throw new AlreadyExistsException("Un emplacement avec la designation "+emplacement.getDesignation()+" existe déjà.");
+			throw new ConflictException("Un emplacement avec la designation "+emplacement.getDesignation()+" existe déjà.");
 		
 		rep.save(emplacement);
 	}
@@ -41,16 +59,15 @@ public class EmplacementService {
 	
 
 	//modifier une emplacement
-	public void updateEmplacement(String designation , Emplacement emplacement) throws AlreadyExistsException, NotFoundException
+	public void updateEmplacement(Long id , Emplacement emplacement) throws ConflictException, NotFoundException
 	{
 		
-		Emplacement updated=rep.findByDesignation(designation)
-				.orElseThrow(() -> new NotFoundException("Aucun emplacement avec la designation "+designation+" n'existe"));
+		Emplacement updated=rep.findById(id)
+				.orElseThrow(() -> new NotFoundException("Aucun emplacement avec l'id "+id+" n'existe"));
 		
 		if(rep.findByDesignation(emplacement.getDesignation()).isPresent() && !rep.findByDesignation(emplacement.getDesignation()).get().equals(updated))
-			throw new AlreadyExistsException("Un emplacement avec la designation "+emplacement.getDesignation()+" existe déjà.");
+			throw new ConflictException("Un emplacement avec la designation "+emplacement.getDesignation()+" existe déjà.");
 		
-		Long id=updated.getId();
 		updated=emplacement;
 		updated.setId(id);
 		
@@ -61,11 +78,11 @@ public class EmplacementService {
 	
 	
 	//supprimer une emplacement
-	public void deleteEmplacement(String designation) throws NotFoundException
+	public void deleteEmplacement(Long id) throws NotFoundException
 	{
 		
-		Emplacement emplacement= rep.findByDesignation(designation)
-				.orElseThrow(() -> new NotFoundException("Aucun emplacement avec la designation "+designation+" n'existe"));
+		Emplacement emplacement= rep.findById(id)
+				.orElseThrow(() -> new NotFoundException("Aucun emplacement avec l'id "+id+" n'existe"));
 		rep.delete(emplacement);
 		
 	}

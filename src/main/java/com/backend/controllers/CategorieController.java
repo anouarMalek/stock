@@ -6,14 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import com.backend.exceptions.AlreadyExistsException;
+import com.backend.entities.Categorie;
+import com.backend.entities.Produit;
+import com.backend.exceptions.ConflictException;
 import com.backend.exceptions.NotFoundException;
-import com.backend.models.Categorie;
 import com.backend.services.CategorieService;
 
 
 @RestController
-@RequestMapping("/categories")
 public class CategorieController {
 	
 	CategorieService service;
@@ -26,41 +26,49 @@ public class CategorieController {
 
 	//GET
 	
-	@GetMapping
+	@GetMapping("/categories")
 	@ResponseStatus(HttpStatus.OK)
-	public List<Categorie> getCategories()  throws NotFoundException
+	public List<Categorie> getCategories(@RequestParam(name="id", required=false) Long id)  throws NotFoundException
 	{
-		return service.getCategories();
+		return service.getCategories(id);
 		 
 	}
 	
+	@GetMapping("/categorie/{id}/produits")
+	@ResponseStatus(HttpStatus.OK)
+	public List<Produit> getProduits(@PathVariable(name="id") Long id)  throws NotFoundException
+	{
+		return service.getProduits(id);
+		 
+	}
+
 	
 	//POST
 	
-	@PostMapping
+	@PostMapping("/categorie")
 	@ResponseStatus(HttpStatus.CREATED)
-	public void addCategorie(@RequestBody Categorie categorie)  throws AlreadyExistsException
+	public void addCategorie(@RequestBody Categorie categorie)  throws ConflictException
 	{
 		service.addCategorie(categorie);
 	}
 	
 	
 	//PUT
-	@PutMapping("/{designation}")
+	@PutMapping("/categorie/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public void updateCategorie(@PathVariable String designation,@RequestBody Categorie categorie)  throws AlreadyExistsException, NotFoundException
+	public void updateCategorie(@PathVariable(name="id") Long id,@RequestBody Categorie categorie)  throws ConflictException, NotFoundException
 	{
-		service.updateCategorie(designation,categorie);
+		service.updateCategorie(id,categorie);
 	}
 	
 	
 	//DELETE
 	
-	@DeleteMapping("/{designation}") 
+	@DeleteMapping("/categorie/{id}") 
 	@ResponseStatus(HttpStatus.OK)
-	public void deleteCategorie(@PathVariable String designation)  throws NotFoundException
+	public void deleteCategorie(@PathVariable(name="id") Long id)  throws NotFoundException
 	{
-		service.deleteCategorie(designation);
+		service.deleteCategorie(id);
 	}
 	
 	

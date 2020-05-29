@@ -6,10 +6,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.backend.exceptions.AlreadyExistsException;
+import com.backend.entities.Inventaire;
+import com.backend.entities.Stock;
+import com.backend.exceptions.ConflictException;
 import com.backend.exceptions.NotFoundException;
-import com.backend.models.Inventaire;
-import com.backend.models.Stock;
 import com.backend.repositories.InventaireRepository;
 
 
@@ -32,10 +32,10 @@ public class InventaireService {
 	
 	
 	//ajouter une inventaire
-	public void addInventaire(Inventaire inventaire) throws AlreadyExistsException
+	public void addInventaire(Inventaire inventaire) throws ConflictException
 	{
 		if(rep.findByStockAndStock(inventaire.getStock(), inventaire.getDate()).isPresent()) 
-			throw new AlreadyExistsException("Un inventaire est déjà effectué sur ce stock à cette date.");
+			throw new ConflictException("Un inventaire est déjà effectué sur ce stock à cette date.");
 		
 		rep.save(inventaire);
 	}

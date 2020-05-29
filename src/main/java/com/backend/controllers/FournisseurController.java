@@ -10,17 +10,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.backend.exceptions.AlreadyExistsException;
+import com.backend.entities.Fournisseur;
+import com.backend.entities.Produit;
+import com.backend.exceptions.ConflictException;
 import com.backend.exceptions.NotFoundException;
-import com.backend.models.Fournisseur;
 import com.backend.services.FournisseurService;
 
 
-@RequestMapping("/fournisseurs")
 @RestController
 public class FournisseurController {
 	
@@ -35,42 +35,51 @@ public class FournisseurController {
 	
 	//GET
 	
-	@GetMapping
+	@GetMapping("/fournisseurs")
 	@ResponseStatus(HttpStatus.OK)
-	public List<Fournisseur> getFournisseurs()  throws NotFoundException
+	public List<Fournisseur> getFournisseurs(@RequestParam(name="id",required=false) Long id)  throws NotFoundException
 	{
-		return service.getFournisseurs();
+		return service.getFournisseurs(id);
+		 
+	}
+	
+	
+	@GetMapping("/fournisseur/{id}/produits")
+	@ResponseStatus(HttpStatus.OK)
+	public List<Produit> getProduits(@PathVariable(name="id") Long id)  throws NotFoundException
+	{
+		return service.getProduits(id);
 		 
 	}
 	
 	
 	//POST
 	
-	@PostMapping
+	@PostMapping("/fournisseur")
 	@ResponseStatus(HttpStatus.CREATED)
-	public void addFournisseur(@RequestBody Fournisseur fournisseur)  throws AlreadyExistsException
+	public void addFournisseur(@RequestBody Fournisseur fournisseur)  throws ConflictException
 	{
 		service.addFournisseur(fournisseur);
 	}
 	
 	
 	//PUT
-	@PutMapping("/{nom}")
+	@PutMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public void updateFournisseur(@PathVariable String nom,@RequestBody Fournisseur fournisseur)  
-			throws AlreadyExistsException, NotFoundException
+	public void updateFournisseur(@PathVariable(name="id") Long id,@RequestBody Fournisseur fournisseur)  
+			throws ConflictException, NotFoundException
 	{
-		service.updateFournisseur(nom,fournisseur);
+		service.updateFournisseur(id,fournisseur);
 	}
 	
 	
 	//DELETE
 	
-	@DeleteMapping("/{nom}") 
+	@DeleteMapping("/{id}") 
 	@ResponseStatus(HttpStatus.OK)
-	public void deleteFournisseur(@PathVariable String nom)  throws NotFoundException
+	public void deleteFournisseur(@PathVariable(name="id") Long id)  throws NotFoundException
 	{
-		service.deleteFournisseur(nom);
+		service.deleteFournisseur(id);
 	}
 	
 	

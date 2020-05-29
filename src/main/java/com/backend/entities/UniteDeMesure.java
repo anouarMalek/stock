@@ -1,16 +1,18 @@
-package com.backend.models;
+package com.backend.entities;
 
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 
@@ -22,12 +24,15 @@ public @Data class UniteDeMesure {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="ID_UDM")
 	Long id;
+	
 	@Column(name="DESIGNATION_UDM", unique=true)
 	String designation;
+	
 	@Column(name="DESCRIPTION_UDM")
 	String description;
+	
+	@JsonIgnore
 	@Column(name="PRODUITS_UDM")
-	@OrderColumn(name="PRODUITS_LIST_INDEX")
-	@OneToMany(targetEntity=Produit.class, fetch=FetchType.EAGER)
-	Produit[] produits;
+	@OneToMany(mappedBy="uniteDeMesure",cascade=CascadeType.ALL)
+	List<Produit> produits;
 }

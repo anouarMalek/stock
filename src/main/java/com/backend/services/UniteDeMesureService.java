@@ -1,13 +1,15 @@
 package com.backend.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.backend.exceptions.AlreadyExistsException;
+import com.backend.entities.Produit;
+import com.backend.entities.UniteDeMesure;
+import com.backend.exceptions.ConflictException;
 import com.backend.exceptions.NotFoundException;
-import com.backend.models.UniteDeMesure;
 import com.backend.repositories.UniteDeMesureRepository;
 
 
@@ -19,21 +21,39 @@ public class UniteDeMesureService {
 	
 
 	//Liste des unités de mesure
-	public List<UniteDeMesure> getUniteDeMesures() throws NotFoundException
+	public List<UniteDeMesure> getUniteDeMesures(Long id) throws NotFoundException
 	{
 		
-		List<UniteDeMesure> uniteDeMesures = rep.findAll();
-		if(uniteDeMesures.isEmpty()) throw new NotFoundException("Aucune unité de mesure trouvée");		
+		List<UniteDeMesure> uniteDeMesures = new ArrayList<UniteDeMesure>();
+		if(id!=null) uniteDeMesures.add(rep.findById(id).orElseThrow(()-> new NotFoundException("Aucune unité de mesure avec l'id "+id+" n'existe")));
+		else uniteDeMesures=rep.findAll();
+			if(uniteDeMesures.isEmpty()) throw new NotFoundException("Aucune unité de mesure trouvée");		
 		
 		return uniteDeMesures;
 	}
 	
 	
+	//Liste des produits
+	public List<Produit> getProduits(Long id) throws NotFoundException
+	{
+		
+		UniteDeMesure uniteDeMesure= rep.findById(id)
+				.orElseThrow(()-> new NotFoundException("Aucune unité de mesure avec l'id "+id+" n'existe"));
+		
+		List<Produit> produits=uniteDeMesure.getProduits();
+		if(produits.isEmpty())
+			throw new NotFoundException("Aucun produit ayant cette unité de mesure.");
+		
+		return produits;
+		
+	}
+	
+	
 	//ajouter une unité de mesure
-	public void addUniteDeMesure(UniteDeMesure uniteDeMesure) throws AlreadyExistsException
+	public void addUniteDeMesure(UniteDeMesure uniteDeMesure) throws ConflictException
 	{
 		if(rep.findByDesignation(uniteDeMesure.getDesignation()).isPresent()) 
-			throw new AlreadyExistsException("Une unité de mesure avec la designation "+uniteDeMesure.getDesignation()+" existe déjà.");
+			throw new ConflictException("Une unité de mesure avec la designation "+uniteDeMesure.getDesignation()+" existe déjà.");
 		
 		rep.save(uniteDeMesure);
 	}
@@ -41,17 +61,16 @@ public class UniteDeMesureService {
 	
 	
 
-	//modifier une unités de mesure
-	public void updateUniteDeMesure(String designation , UniteDeMesure uniteDeMesure) throws AlreadyExistsException, NotFoundException
+	//modifier une unité de mesure
+	public void updateUniteDeMesure(Long id , UniteDeMesure uniteDeMesure) throws ConflictException, NotFoundException
 	{
 		
-		UniteDeMesure updated=rep.findByDesignation(designation)
-				.orElseThrow(() -> new NotFoundException("Aucune unité de mesure avec la designation "+designation+" n'existe"));
+		UniteDeMesure updated=rep.findById(id)
+				.orElseThrow(() -> new NotFoundException("Aucune unité de mesure avec l'id "+id+" n'existe"));
 		
 		if(rep.findByDesignation(uniteDeMesure.getDesignation()).isPresent() && !rep.findByDesignation(uniteDeMesure.getDesignation()).get().equals(updated))
-			throw new AlreadyExistsException("Une unité de mesure avec la designation "+uniteDeMesure.getDesignation()+" existe déjà.");
+			throw new ConflictException("Une unité de mesure avec la designation "+uniteDeMesure.getDesignation()+" existe déjà.");
 		
-		Long id=updated.getId();
 		updated=uniteDeMesure;
 		updated.setId(id);
 		
@@ -61,12 +80,12 @@ public class UniteDeMesureService {
 
 	
 	
-	//supprimer une unités de mesure
-	public void deleteUniteDeMesure(String designation) throws NotFoundException
+	//supprimer une unité de mesure
+	public void deleteUniteDeMesure(Long id) throws NotFoundException
 	{
 		
-		UniteDeMesure uniteDeMesure= rep.findByDesignation(designation)
-				.orElseThrow(() -> new NotFoundException("Aucune unité de mesure avec la designation "+designation+" n'existe"));
+		UniteDeMesure uniteDeMesure= rep.findById(id)
+				.orElseThrow(() -> new NotFoundException("Aucune unité de mesure avec l'id "+id+" n'existe"));
 		rep.delete(uniteDeMesure);
 		
 	}

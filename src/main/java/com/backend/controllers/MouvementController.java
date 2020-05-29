@@ -8,16 +8,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.backend.exceptions.AlreadyExistsException;
+import com.backend.entities.Mouvement;
+import com.backend.exceptions.ConflictException;
 import com.backend.exceptions.NotFoundException;
-import com.backend.models.Mouvement;
 import com.backend.services.MouvementService;
 
 @RestController
-@RequestMapping("/mouvements")
 public class MouvementController {
 	
 	MouvementService service;
@@ -30,20 +30,20 @@ public class MouvementController {
 
 	//GET
 	
-	@GetMapping
+	@GetMapping("/mouvements")
 	@ResponseStatus(HttpStatus.OK)
-	public List<Mouvement> getMouvements()  throws NotFoundException
+	public List<Mouvement> getMouvements(@RequestParam(name="id", required=false) Long id)  throws NotFoundException
 	{
-		return service.getMouvements();
+		return service.getMouvements(id);
 		 
 	}
 	
 	
 	//POST
 	
-	@PostMapping
+	@PostMapping("/mouvement")
 	@ResponseStatus(HttpStatus.CREATED)
-	public void addMouvement(@RequestBody Mouvement mouvement)  throws AlreadyExistsException
+	public void addMouvement(@RequestBody Mouvement mouvement)  throws ConflictException
 	{
 		service.addMouvement(mouvement);
 	}

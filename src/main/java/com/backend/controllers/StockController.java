@@ -10,83 +10,104 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.backend.exceptions.AlreadyExistsException;
+import com.backend.entities.Inventaire;
+import com.backend.entities.Mouvement;
+import com.backend.entities.Produit;
+import com.backend.entities.Stock;
+import com.backend.exceptions.ConflictException;
 import com.backend.exceptions.NotFoundException;
-import com.backend.models.Emplacement;
-import com.backend.models.Produit;
-import com.backend.models.Stock;
 import com.backend.services.StockService;
 
-@RequestMapping("/stocks")
 @RestController
 public class StockController {
-	
-	
+
+
 	StockService service;
-	
+
 	@Autowired
 	public StockController(StockService service) {
-		
+
 		this.service=service;
 	}
-	
-	
+
+
 	//GET
-	
-	@GetMapping
+
+	@GetMapping("/stocks")
 	@ResponseStatus(HttpStatus.OK)
-	public List<Stock> getStocks()  throws NotFoundException
+	public List<Stock> getStocks(@RequestParam(name="id", required=false) Long id)  throws NotFoundException
 	{
-		return service.getStocks();
-		 
+		return service.getStocks(id);
+
+	}
+
+
+	//GET
+
+	@GetMapping("/stock/{id}/produits")
+	@ResponseStatus(HttpStatus.OK)
+	public List<Produit> getProduits(@PathVariable(name="id") Long id)  throws NotFoundException
+	{
+		return service.getProduits(id);
+
+	}
+
+
+	//GET
+
+	@GetMapping("/stock/{id}/inventaires")
+	@ResponseStatus(HttpStatus.OK)
+	public List<Inventaire> getInventaires(@PathVariable(name="id") Long id)  throws NotFoundException
+	{
+		return service.getInventaires(id);
+
 	}
 	
-	
 	//GET
-	
-		@GetMapping("/products")
+
+		@GetMapping("/stock/{id}/mouvements")
 		@ResponseStatus(HttpStatus.OK)
-		public List<Produit> getProducts(@RequestParam Emplacement emplacement)  throws NotFoundException
+		public List<Mouvement> getMouvements(@PathVariable(name="id") Long id)  throws NotFoundException
 		{
-			return service.getProducts(emplacement);
-			 
+			return service.getMouvements(id);
+
 		}
-	
-	
+
+
+		
 	//POST
-	
-	@PostMapping
+
+	@PostMapping("/stock")
 	@ResponseStatus(HttpStatus.CREATED)
-	public void addStock(@RequestBody Stock stock)  throws AlreadyExistsException
+	public void addStock(@RequestBody Stock stock)  throws ConflictException
 	{
 		service.addStock(stock);
 	}
-	
-	
+
+
 	//PUT
-	@PutMapping("/{emplacement}")
+	@PutMapping("/stock/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public void updateStock(@PathVariable Emplacement emplacement,@RequestBody Stock stock)  throws AlreadyExistsException, NotFoundException
+	public void updateStock(@PathVariable(name="id") Long id,@RequestBody Stock stock)  throws ConflictException, NotFoundException
 	{
-		service.updateStock(emplacement,stock);
+		service.updateStock(id,stock);
 	}
-	
-	
+
+
 	//DELETE
-	
-	@DeleteMapping("/{emplacement}") 
+
+	@DeleteMapping("/stock/{id}") 
 	@ResponseStatus(HttpStatus.OK)
-	public void deleteStock(@PathVariable Emplacement emplacement)  throws NotFoundException
+	public void deleteStock(@PathVariable(name="id") Long id)  throws NotFoundException
 	{
-		service.deleteStock(emplacement);
+		service.deleteStock(id);
 	}
-	
-	
-	
+
+
+
 
 }

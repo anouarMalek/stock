@@ -1,16 +1,17 @@
 package com.backend.services;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.backend.exceptions.AlreadyExistsException;
+import com.backend.entities.Inventaire;
+import com.backend.entities.Mouvement;
+import com.backend.entities.Produit;
+import com.backend.entities.Stock;
+import com.backend.exceptions.ConflictException;
 import com.backend.exceptions.NotFoundException;
-import com.backend.models.Emplacement;
-import com.backend.models.Produit;
-import com.backend.models.Stock;
 import com.backend.repositories.StockRepository;
 
 @Service
@@ -21,21 +22,92 @@ public class StockService {
 	
 
 	//Liste des stocks
-	public List<Stock> getStocks() throws NotFoundException
+	public List<Stock> getStocks(Long id) throws NotFoundException
 	{
+		List<Stock> stocks = new ArrayList<Stock>();
+		if(id!=null) 
+			stocks.add(rep.findById(id).orElseThrow(() -> new NotFoundException("Aucun stock avec l'id "+id+" n'existe")));
 		
-		List<Stock> stocks = rep.findAll();
-		if(stocks.isEmpty()) throw new NotFoundException("Aucun stock trouvé");		
+		else stocks = rep.findAll();
+			if(stocks.isEmpty()) throw new NotFoundException("Aucun stock trouvé");		
 		
 		return stocks;
 	}
 	
 	
+	
+	//Liste des produits
+	public List<Produit> getProduits(Long id) throws NotFoundException
+	{
+		Stock stock = rep.findById(id)
+				.orElseThrow(() -> new NotFoundException("Aucun stock avec l'id "+id+" n'existe"));
+		
+		List<Produit> produits = stock.getProduits();
+		
+		
+		return produits;
+
+	}
+	
+	
+	
+	//Trouver un produit par nom
+	public Produit produit(String nom, double prixAchat, Long id)
+	{
+		
+		List<Produit> produits= getProduits(id);
+		for (Produit produit : produits) {
+			if(produit.getNom().equals(nom) && produit.getPrixAchat()==prixAchat)
+			{
+				return produit;
+				
+			}
+		}
+		
+		return null;
+	}
+	
+	
+	
+	//Liste des inventaires
+		public List<Inventaire> getInventaires(Long id) throws NotFoundException
+		{
+			Stock stock = rep.findById(id)
+					.orElseThrow(() -> new NotFoundException("Aucun stock avec l'id "+id+" n'existe"));
+			
+			List<Inventaire> inventaires = stock.getInventaires();
+			
+			if(inventaires.isEmpty()) throw new NotFoundException("Aucun inventaire effectué sur ce stock");
+			
+			
+			return inventaires;
+
+		}
+		
+		
+		//Liste des mouvements
+				public List<Mouvement> getMouvements(Long id) throws NotFoundException
+				{
+					Stock stock = rep.findById(id)
+							.orElseThrow(() -> new NotFoundException("Aucun stock avec l'id "+id+" n'existe"));
+					
+					List<Mouvement> mouvements = stock.getMouvements();
+					
+					if(mouvements.isEmpty()) throw new NotFoundException("Aucun mouvement effectué.");
+					
+					
+					return mouvements;
+
+				}
+		
+	
+	
+	
 	//ajouter un stock
-	public void addStock(Stock stock) throws AlreadyExistsException
+	public void addStock(Stock stock) throws ConflictException
 	{
 		if(rep.findByEmplacement(stock.getEmplacement()).isPresent()) 
-			throw new AlreadyExistsException("Un stock avec l'emplacement "+stock.getEmplacement().getDesignation()+" existe déjà.");
+			throw new ConflictException("Un stock avec l'emplacement "+stock.getEmplacement().getDesignation()+" existe déjà.");
 		
 		rep.save(stock);
 	}
@@ -44,16 +116,15 @@ public class StockService {
 	
 
 	//modifier un stock
-	public void updateStock(Emplacement emplacement , Stock stock) throws AlreadyExistsException, NotFoundException
+	public void updateStock(Long id , Stock stock) throws ConflictException, NotFoundException
 	{
 		
-		Stock updated=rep.findByEmplacement(emplacement)
-				.orElseThrow(() -> new NotFoundException("Aucun stock avec l'emplacement "+emplacement.getDesignation()+" n'existe"));
+		Stock updated=rep.findById(id)
+				.orElseThrow(() -> new NotFoundException("Aucun stock avec l'id "+id+" n'existe"));
 		
 		if(rep.findByEmplacement(stock.getEmplacement()).isPresent() && !rep.findByEmplacement(stock.getEmplacement()).get().equals(updated))
-			throw new AlreadyExistsException("Un stock avec l'emplacement "+stock.getEmplacement()+" existe déjà.");
+			throw new ConflictException("Un stock avec l'emplacement "+stock.getEmplacement()+" existe déjà.");
 		
-		Long id=updated.getId();
 		updated=stock;
 		updated.setId(id);
 		
@@ -64,25 +135,14 @@ public class StockService {
 	
 	
 	//supprimer un stock
-	public void deleteStock(Emplacement emplacement) throws NotFoundException
+	public void deleteStock(Long id) throws NotFoundException
 	{
 		
-		Stock stock= rep.findByEmplacement(emplacement)
-				.orElseThrow(() -> new NotFoundException("Aucun stock avec l'emplacement "+emplacement.getDesignation()+" n'existe"));
+		Stock stock= rep.findById(id)
+				.orElseThrow(() -> new NotFoundException("Aucun stock avec l'id "+id+" n'existe"));
 		rep.delete(stock);
 		
 	}
 
-
-	//Liste des produits dans le stock
-	public List<Produit> getProducts(Emplacement emplacement) {
-		
-		
-		Stock stock= rep.findByEmplacement(emplacement)
-				.orElseThrow(()-> new NotFoundException("Aucun stock avec l'emplacement "+emplacement.getDesignation()+" n'existe"));
-		List<Produit> produits = Arrays.asList(stock.getProduits());
-		if(produits.isEmpty()) throw new NotFoundException("Aucun produit trouvé dans le stock");
-		return produits;
-	}
 
 }

@@ -10,17 +10,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.backend.exceptions.AlreadyExistsException;
+import com.backend.entities.Emplacement;
+import com.backend.entities.Stock;
+import com.backend.exceptions.ConflictException;
 import com.backend.exceptions.NotFoundException;
-import com.backend.models.Emplacement;
 import com.backend.services.EmplacementService;
 
 @RestController
-@RequestMapping("/emplacements")
 public class EmplacementController {
 	
 	EmplacementService service;
@@ -33,41 +33,51 @@ public class EmplacementController {
 
 	//GET
 	
-	@GetMapping
+	@GetMapping("/emplacements")
 	@ResponseStatus(HttpStatus.OK)
-	public List<Emplacement> getEmplacements()  throws NotFoundException
+	public List<Emplacement> getEmplacements(@RequestParam(name="id", required=false) Long id)  throws NotFoundException
 	{
-		return service.getEmplacements();
+		return service.getEmplacements(id);
 		 
 	}
 	
 	
+	@GetMapping("/emplacement/{id}/stock")
+	@ResponseStatus(HttpStatus.OK)
+	public Stock getStock(@PathVariable(name="id") Long id)  throws NotFoundException
+	{
+		return service.getStock(id);
+		 
+	}
+	
+	
+	
 	//POST
 	
-	@PostMapping
+	@PostMapping("/emplacement")
 	@ResponseStatus(HttpStatus.CREATED)
-	public void addEmplacement(@RequestBody Emplacement emplacement)  throws AlreadyExistsException
+	public void addEmplacement(@RequestBody Emplacement emplacement)  throws ConflictException
 	{
 		service.addEmplacement(emplacement);
 	}
 	
 	
 	//PUT
-	@PutMapping("/{designation}")
+	@PutMapping("/emplacement/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public void updateEmplacement(@PathVariable String designation,@RequestBody Emplacement emplacement)  throws AlreadyExistsException, NotFoundException
+	public void updateEmplacement(@PathVariable(name="id") Long id,@RequestBody Emplacement emplacement)  throws ConflictException, NotFoundException
 	{
-		service.updateEmplacement(designation,emplacement);
+		service.updateEmplacement(id,emplacement);
 	}
 	
 	
 	//DELETE
 	
-	@DeleteMapping("/{designation}") 
+	@DeleteMapping("/emplacement/{id}") 
 	@ResponseStatus(HttpStatus.OK)
-	public void deleteEmplacement(@PathVariable String designation)  throws NotFoundException
+	public void deleteEmplacement(@PathVariable(name="id") Long id)  throws NotFoundException
 	{
-		service.deleteEmplacement(designation);
+		service.deleteEmplacement(id);
 	}
 	
 	

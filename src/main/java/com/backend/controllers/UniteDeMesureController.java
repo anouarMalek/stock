@@ -10,18 +10,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.backend.exceptions.AlreadyExistsException;
+import com.backend.entities.Produit;
+import com.backend.entities.UniteDeMesure;
+import com.backend.exceptions.ConflictException;
 import com.backend.exceptions.NotFoundException;
-import com.backend.models.UniteDeMesure;
 import com.backend.services.UniteDeMesureService;
 
 
 @RestController
-@RequestMapping("/unitesDeMesure")
 public class UniteDeMesureController {
 	
 	
@@ -35,41 +35,52 @@ public class UniteDeMesureController {
 
 	//GET
 	
-	@GetMapping
+	@GetMapping("/unitesDeMesure")
 	@ResponseStatus(HttpStatus.OK)
-	public List<UniteDeMesure> getUniteDeMesures()  throws NotFoundException
+	public List<UniteDeMesure> getUniteDeMesures(@RequestParam(name="id", required=false) Long id)  throws NotFoundException
 	{
-		return service.getUniteDeMesures();
+		return service.getUniteDeMesures(id);
 		 
+	}
+	
+	
+	
+	@GetMapping("/uniteDeMesure/{id}/produits")
+	@ResponseStatus(HttpStatus.OK)
+	public List<Produit> getProduits(@PathVariable(name="id") Long id)
+	{
+		
+		return service.getProduits(id);
 	}
 	
 	
 	//POST
 	
-	@PostMapping
+	@PostMapping("/uniteDeMesure")
 	@ResponseStatus(HttpStatus.CREATED)
-	public void addUniteDeMesure(@RequestBody UniteDeMesure uniteDeMesure)  throws AlreadyExistsException
+	public void addUniteDeMesure(@RequestBody UniteDeMesure uniteDeMesure)  throws ConflictException
 	{
 		service.addUniteDeMesure(uniteDeMesure);
 	}
 	
 	
 	//PUT
-	@PutMapping("/{designation}")
+	@PutMapping("/uniteDeMesure/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public void updateUniteDeMesure(@PathVariable String designation,@RequestBody UniteDeMesure uniteDeMesure)  throws AlreadyExistsException, NotFoundException
+	public void updateUniteDeMesure(@PathVariable(name="id") Long id,@RequestBody UniteDeMesure uniteDeMesure)  
+			throws ConflictException, NotFoundException
 	{
-		service.updateUniteDeMesure(designation,uniteDeMesure);
+		service.updateUniteDeMesure(id,uniteDeMesure);
 	}
 	
 	
 	//DELETE
 	
-	@DeleteMapping("/{designation}") 
+	@DeleteMapping("/uniteDeMesure/{id}") 
 	@ResponseStatus(HttpStatus.OK)
-	public void deleteUniteDeMesure(@PathVariable String designation)  throws NotFoundException
+	public void deleteUniteDeMesure(@PathVariable(name="id") Long id)  throws NotFoundException
 	{
-		service.deleteUniteDeMesure(designation);
+		service.deleteUniteDeMesure(id);
 	}
 	
 	

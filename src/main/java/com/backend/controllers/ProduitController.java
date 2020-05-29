@@ -10,17 +10,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.backend.exceptions.AlreadyExistsException;
+import com.backend.entities.Produit;
+import com.backend.exceptions.ConflictException;
 import com.backend.exceptions.NotFoundException;
-import com.backend.models.Produit;
 import com.backend.services.ProduitService;
 
 @RestController
-@RequestMapping("/produits")
 public class ProduitController {
 	
 	ProduitService service;
@@ -33,41 +32,41 @@ public class ProduitController {
 
 	//GET
 	
-	@GetMapping
+	@GetMapping("/produits")
 	@ResponseStatus(HttpStatus.OK)
-	public List<Produit> getProduits()  throws NotFoundException
+	public List<Produit> getProduits(@RequestParam(name="id",required=false) Long id)  throws NotFoundException
 	{
-		return service.getProduits();
+		return service.getProduits(id);
 		 
 	}
 	
 	
 	//POST
 	
-	@PostMapping
+	@PostMapping("/produit")
 	@ResponseStatus(HttpStatus.CREATED)
-	public void addProduit(@RequestBody Produit produit)  throws AlreadyExistsException
+	public void addProduit(@RequestBody Produit produit)  throws ConflictException
 	{
 		service.addProduit(produit);
 	}
 	
 	
 	//PUT
-	@PutMapping("/{nom}")
+	@PutMapping("/produit/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public void updateProduit(@PathVariable String nom,@RequestBody Produit produit)  throws AlreadyExistsException, NotFoundException
+	public void updateProduit(@PathVariable(name="id") Long id,@RequestBody Produit produit)  throws ConflictException, NotFoundException
 	{
-		service.updateProduit(nom,produit);
+		service.updateProduit(id,produit);
 	}
 	
 	
 	//DELETE
 	
-	@DeleteMapping("/{nom}") 
+	@DeleteMapping("/produit/{id}") 
 	@ResponseStatus(HttpStatus.OK)
-	public void deleteProduit(@PathVariable String nom)  throws NotFoundException
+	public void deleteProduit(@PathVariable(name="id") Long id)  throws NotFoundException
 	{
-		service.deleteProduit(nom);
+		service.deleteProduit(id);
 	}
 	
 	
