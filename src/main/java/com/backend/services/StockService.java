@@ -51,7 +51,7 @@ public class StockService {
 	
 	
 	
-	//Trouver un produit par nom
+	//Trouver un produit par nom et prix achat
 	public Produit produit(String nom, double prixAchat, Long id)
 	{
 		

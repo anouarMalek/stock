@@ -29,7 +29,7 @@ public class InventaireService {
 	@Autowired
 	InventaireRepository rep;
 	
-	@Value("classpath:/contrat/Contrat.txt")
+	@Value("classpath:/inventaire/inventaire.txt")
 	private Resource resource;
 	
 	public static String asString(Resource resource) {
