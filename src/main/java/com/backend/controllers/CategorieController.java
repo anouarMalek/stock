@@ -12,7 +12,7 @@ import com.backend.exceptions.ConflictException;
 import com.backend.exceptions.NotFoundException;
 import com.backend.services.CategorieService;
 
-
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 public class CategorieController {
 	

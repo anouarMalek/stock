@@ -17,6 +17,9 @@ public class UtilisateurService {
 	@Autowired
 	UtilisateurRepository rep;
 	
+	@Autowired
+	EmailServiceImpl emailService;
+	
 	
 	public Utilisateur getByUsername(String username)
 	{
@@ -53,13 +56,20 @@ public class UtilisateurService {
 			throw new ConflictException("Un utilisateur avec le CIN "+utilisateur.getCin()+" existe déjà");
 		}
 		
-		utilisateur.setPassword(new BCryptPasswordEncoder().encode(utilisateur.getPassword()));
+		String password= utilisateur.getPassword();
+		utilisateur.setPassword(new BCryptPasswordEncoder().encode(utilisateur.getPassword()));				
 		
 		rep.save(utilisateur);
 		
+		if(!utilisateur.getEmail().isEmpty() && utilisateur.getEmail()!=null)
+		{
+			utilisateur.setPassword(password);
+			emailService.sendAuthenticationInfos(utilisateur);
+		}
+		
 	}
 	
-	public Utilisateur updateUtilisateur(Long id,Utilisateur utilisateur)
+	public void updateUtilisateur(Long id,Utilisateur utilisateur)
 	{
 		Utilisateur updated = rep.findById(id).orElseThrow(() -> new NotFoundException("Aucun utilisateur avec l'id "+id+" trouvé"));
 		
@@ -69,6 +79,7 @@ public class UtilisateurService {
 		//verifier l'unicité du nouveau CIN
 		if(rep.findByCin(utilisateur.getCin()).isPresent() && !(rep.findByCin(utilisateur.getCin()).get()==updated))
 			throw new ConflictException("Un utilisateur avec le CIN "+utilisateur.getCin()+" existe déjà");
+		String password = null;
 		
 		if(utilisateur.getNom()!=null && !utilisateur.getNom().isEmpty()) updated.setNom(utilisateur.getNom());
 		if(utilisateur.getPrenom()!=null && !utilisateur.getPrenom().isEmpty()) updated.setPrenom(utilisateur.getPrenom());
@@ -77,11 +88,23 @@ public class UtilisateurService {
 		if(utilisateur.getAdresse()!=null && !utilisateur.getAdresse().isEmpty()) updated.setAdresse(utilisateur.getAdresse());
 		if(utilisateur.getUsername()!=null && !utilisateur.getUsername().isEmpty()) updated.setUsername(utilisateur.getUsername());
 		if(utilisateur.getEmail()!=null && !utilisateur.getEmail().isEmpty()) updated.setEmail(utilisateur.getEmail());
-		if(utilisateur.getPassword()!=null && !utilisateur.getPassword().isEmpty()) updated.setPassword(new BCryptPasswordEncoder().encode(utilisateur.getPassword()));
+		if(utilisateur.getPassword()!=null && !utilisateur.getPassword().isEmpty()) 
+			{
+			password = utilisateur.getPassword();
+			updated.setPassword(new BCryptPasswordEncoder().encode(utilisateur.getPassword()));
+			}
+		if(utilisateur.getRole()!=null && !utilisateur.getRole().isEmpty()) updated.setRole(utilisateur.getRole());
 		
+		//Envoyer un email à l'utilisateur pour s'identifier		
+		utilisateur.setEmail(updated.getEmail());
+		if(!utilisateur.getEmail().isEmpty() && utilisateur.getEmail()!=null)
+		{
+			utilisateur.setUsername(updated.getUsername());
+			if(password!=null && !password.isEmpty()) utilisateur.setPassword(password);
+			emailService.sendAuthenticationInfos(utilisateur);
+		}
 		rep.save(updated);
 		
-		return updated;
 	}
 
 	public void removeUtilisateur(Long id)

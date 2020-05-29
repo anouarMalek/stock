@@ -86,10 +86,10 @@
 //
 //			//produit
 //			.antMatchers(HttpMethod.POST,"/produit").hasRole("User")	//creer produits
-//			.antMatchers(HttpMethod.GET,"/categorie/{id}/produits").hasRole("User")	//afficher produits par categorie
-//			.antMatchers(HttpMethod.GET,"/fournisseur/{id}/produits").hasRole("User")	//afficher produits par fournisseur
+//		//	.antMatchers(HttpMethod.GET,"/categorie/{id}/produits").hasRole("User")	//afficher produits par categorie
+//		//	.antMatchers(HttpMethod.GET,"/fournisseur/{id}/produits").hasRole("User")	//afficher produits par fournisseur
 //			.antMatchers(HttpMethod.GET,"/stock/{id}/produits").hasRole("User")	//afficher produits par stock
-//			.antMatchers(HttpMethod.GET,"/uniteDeMesure/{id}/produits").hasRole("User")	//afficher produits par unité de mesure
+//		//	.antMatchers(HttpMethod.GET,"/uniteDeMesure/{id}/produits").hasRole("User")	//afficher produits par unité de mesure
 //			.antMatchers("/produit/{id}").hasRole("User")		//modifier supprimer produit
 //			
 //			//stock
@@ -97,7 +97,7 @@
 //			.antMatchers("/emplacement/{id}/stock").hasRole("User")	//afficher stock
 //			.antMatchers("/stock/{id}").hasRole("User")		//modifier supprimer stock	
 //			
-//			//		HNA FIN WSLT
+//			
 //			
 //			
 //			//inventaire
@@ -107,6 +107,11 @@
 //			//mouvement
 //			.antMatchers(HttpMethod.POST,"/mouvement").hasRole("User")		//creer mouvements
 //			.antMatchers(HttpMethod.GET,"/stock/mouvements").hasAnyRole("User")	//afficher mouvements
+
+//			//utilisateur
+//			.antMatchers(HttpMethod.POST,"/utilisateur").hasRole("Admin")		//creer utilisateurs
+//			.antMatchers(HttpMethod.GET,"/utilisateurs").hasAnyRole("Admin","User")	//afficher utilisateurs
+//			.antMatchers("/utilisateur/{id}").hasRole("Admin")		//modifier supprimer utilisateur
 //			.and()
 //			.httpBasic()
 //			.and()
