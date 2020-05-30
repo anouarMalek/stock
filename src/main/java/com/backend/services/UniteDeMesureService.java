@@ -71,8 +71,8 @@ public class UniteDeMesureService {
 		if(rep.findByDesignation(uniteDeMesure.getDesignation()).isPresent() && !rep.findByDesignation(uniteDeMesure.getDesignation()).get().equals(updated))
 			throw new ConflictException("Une unité de mesure avec la designation "+uniteDeMesure.getDesignation()+" existe déjà.");
 		
-		updated=uniteDeMesure;
-		updated.setId(id);
+		if(uniteDeMesure.getDesignation()!=null && !uniteDeMesure.getDesignation().isEmpty()) updated.setDesignation(uniteDeMesure.getDesignation());
+		if(uniteDeMesure.getDescription()!=null && !uniteDeMesure.getDescription().isEmpty()) updated.setDescription(uniteDeMesure.getDescription());
 		
 		rep.save(updated);
 		

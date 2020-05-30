@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.backend.entities.Inventaire;
 import com.backend.exceptions.NotFoundException;
 import com.backend.services.InventaireService;
+import com.itextpdf.text.DocumentException;
 
 
 @CrossOrigin(origins = "http://localhost:4200")
@@ -45,7 +46,7 @@ public class InventaireController {
 	
 	@PostMapping("/inventaire")
 	@ResponseStatus(HttpStatus.CREATED)
-	public void addInventaire(@RequestBody Inventaire inventaire)  throws IOException
+	public void addInventaire(@RequestBody Inventaire inventaire)  throws IOException, DocumentException
 	{
 		service.addInventaire(inventaire);
 	}

@@ -44,6 +44,16 @@ public class ProduitController {
 	}
 	
 	
+	//Meme produit dans differents stocks
+	@GetMapping("/produits/{nom}")
+	@ResponseStatus(HttpStatus.OK)
+	public List<Produit> getProduitsByNom(@PathVariable(name="nom") String nom)  throws NotFoundException
+	{
+		return service.getProduitsByNom(nom);
+		 
+	}
+	
+	
 	//POST
 	
 	@PostMapping("/produit")

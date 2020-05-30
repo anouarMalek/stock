@@ -68,8 +68,8 @@ public class EmplacementService {
 		if(rep.findByDesignation(emplacement.getDesignation()).isPresent() && !rep.findByDesignation(emplacement.getDesignation()).get().equals(updated))
 			throw new ConflictException("Un emplacement avec la designation "+emplacement.getDesignation()+" existe déjà.");
 		
-		updated=emplacement;
-		updated.setId(id);
+		if(emplacement.getDesignation()!=null && !emplacement.getDesignation().isEmpty()) updated.setDesignation(emplacement.getDesignation());
+		if(emplacement.getAdresse()!=null && !emplacement.getAdresse().isEmpty()) updated.setAdresse(emplacement.getAdresse());
 		
 		rep.save(updated);
 		

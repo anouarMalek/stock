@@ -34,7 +34,7 @@ public class ProduitService {
 	
 	
 	//Liste du meme produit dans differents stocks
-		public List<Produit> getProduit(String nom) throws NotFoundException
+		public List<Produit> getProduitsByNom(String nom) throws NotFoundException
 		{
 			
 			List<Produit> produits = rep.findAllByNom(nom);
@@ -88,8 +88,13 @@ public class ProduitService {
 		if(rep.findByNom(produit.getNom()).isPresent() && !rep.findByNom(produit.getNom()).get().equals(updated))
 			throw new ConflictException("Un produit avec la nom "+produit.getNom()+" existe déjà.");
 		
-		updated=produit;
-		updated.setId(id);
+		if(produit.getNom()!=null && !produit.getNom().isEmpty()) updated.setNom(produit.getNom());
+		if(produit.getDescription()!=null && !produit.getDescription().isEmpty()) updated.setDescription(produit.getDescription());
+		if(produit.getType()!=null && !produit.getType().isEmpty()) updated.setType(produit.getType());
+		if(produit.getPrixAchat()!=0) updated.setPrixAchat(produit.getPrixAchat());
+		if(produit.getQuantiteEnStock()!=0) updated.setQuantiteEnStock(produit.getQuantiteEnStock());
+		if(produit.getQuantiteMin()!=0) updated.setQuantiteMin(produit.getQuantiteMin());
+		if(produit.getQuantiteTotale()!=0) updated.setQuantiteTotale(produit.getQuantiteTotale());
 		
 		rep.save(updated);
 		

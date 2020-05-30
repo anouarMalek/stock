@@ -125,8 +125,8 @@ public class StockService {
 		if(rep.findByEmplacement(stock.getEmplacement()).isPresent() && !rep.findByEmplacement(stock.getEmplacement()).get().equals(updated))
 			throw new ConflictException("Un stock avec l'emplacement "+stock.getEmplacement()+" existe déjà.");
 		
-		updated=stock;
-		updated.setId(id);
+		if(stock.getTelephone()!=null && !stock.getTelephone().isEmpty()) updated.setTelephone(stock.getTelephone());
+		if(stock.getFax()!=null && !stock.getFax().isEmpty()) updated.setFax(stock.getFax());
 		
 		rep.save(updated);
 		

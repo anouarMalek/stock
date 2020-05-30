@@ -61,7 +61,7 @@ public class UtilisateurService {
 		
 		rep.save(utilisateur);
 		
-		if(!utilisateur.getEmail().isEmpty() && utilisateur.getEmail()!=null)
+		if(utilisateur.getEmail()!=null && !utilisateur.getEmail().isEmpty())
 		{
 			utilisateur.setPassword(password);
 			emailService.sendAuthenticationInfos(utilisateur);

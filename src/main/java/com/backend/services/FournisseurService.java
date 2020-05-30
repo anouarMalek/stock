@@ -73,8 +73,9 @@ public class FournisseurService {
 		if(rep.findByNom(fournisseur.getNom()).isPresent() && !rep.findByNom(fournisseur.getNom()).get().equals(updated))
 			throw new ConflictException("Un fournisseur avec la nom "+fournisseur.getNom()+" existe déjà.");
 		
-		updated=fournisseur;
-		updated.setId(id);
+		if(fournisseur.getNom()!=null && !fournisseur.getNom().isEmpty()) updated.setNom(fournisseur.getNom());
+		if(fournisseur.getTelephone()!=null && !fournisseur.getTelephone().isEmpty()) updated.setTelephone(fournisseur.getTelephone());
+		if(fournisseur.getAdresse()!=null && !fournisseur.getAdresse().isEmpty()) updated.setAdresse(fournisseur.getAdresse());
 		
 		rep.save(updated);
 		

@@ -65,8 +65,8 @@ public class CategorieService {
 		if(rep.findByDesignation(categorie.getDesignation()).isPresent() && !rep.findByDesignation(categorie.getDesignation()).get().equals(updated))
 			throw new ConflictException("Une categorie avec la designation "+categorie.getDesignation()+" existe déjà.");
 		
-		updated=categorie;
-		updated.setId(id);
+		if(categorie.getDesignation()!=null && !categorie.getDesignation().isEmpty()) updated.setDesignation(categorie.getDesignation());
+		if(categorie.getDescription()!=null && !categorie.getDescription().isEmpty()) updated.setDescription(categorie.getDescription());
 		
 		rep.save(updated);
 		

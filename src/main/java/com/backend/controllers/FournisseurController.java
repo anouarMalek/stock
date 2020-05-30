@@ -67,7 +67,7 @@ public class FournisseurController {
 	
 	
 	//PUT
-	@PutMapping("/{id}")
+	@PutMapping("/fournisseur/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public void updateFournisseur(@PathVariable(name="id") Long id,@RequestBody Fournisseur fournisseur)  
 			throws ConflictException, NotFoundException
@@ -78,7 +78,7 @@ public class FournisseurController {
 	
 	//DELETE
 	
-	@DeleteMapping("/{id}") 
+	@DeleteMapping("/fournisseur/{id}") 
 	@ResponseStatus(HttpStatus.OK)
 	public void deleteFournisseur(@PathVariable(name="id") Long id)  throws NotFoundException
 	{
