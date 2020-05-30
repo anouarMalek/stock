@@ -131,6 +131,7 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers(HttpMethod.POST,"/utilisateur").hasRole("Admin")		//creer utilisateurs
 			.antMatchers(HttpMethod.GET,"/utilisateurs").hasRole("Admin")	//afficher utilisateurs
 			.antMatchers("/utilisateur/{id}").hasRole("Admin")		//modifier supprimer utilisateur
+			.antMatchers(HttpMethod.GET,"/utilisateur/{username}").hasRole("Admin")		//chercher utilisateur par username
 			.and()
 			.httpBasic()
 			.and()

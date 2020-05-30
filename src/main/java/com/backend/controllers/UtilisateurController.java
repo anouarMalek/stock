@@ -30,6 +30,13 @@ public class UtilisateurController {
 			}
 			
 			
+			@GetMapping("/utilisateur/{username}")
+			@ResponseStatus(HttpStatus.OK)
+			public Utilisateur getUtilisateur(@PathVariable(name="username") String username)
+			{
+				return service.getByUsername(username);
+			}
+			
 
 		
 		//POST
