@@ -1,7 +1,12 @@
 package com.backend.services;
 
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toCollection;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,10 +46,15 @@ public class UniteDeMesureService {
 				.orElseThrow(()-> new NotFoundException("Aucune unité de mesure avec l'id "+id+" n'existe"));
 		
 		List<Produit> produits=uniteDeMesure.getProduits();
+		
 		if(produits.isEmpty())
 			throw new NotFoundException("Aucun produit ayant cette unité de mesure.");
 		
-		return produits;
+		List<Produit> unique = produits.stream()
+                .collect(collectingAndThen(toCollection(() -> new TreeSet<>(comparing(Produit::getNom))),ArrayList::new));
+		
+		return unique;
+		
 		
 	}
 	

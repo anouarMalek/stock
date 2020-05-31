@@ -40,6 +40,7 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 		this.service = service;
 	}
 	
+	@SuppressWarnings("unused")
 	@PostConstruct
 	public void init() {
 		
@@ -92,7 +93,7 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 			.and()
 			.authorizeRequests()
 			//categorie
-			.antMatchers(HttpMethod.POST,"/categorie").hasRole("Admin")		//creer categories
+			.antMatchers(HttpMethod.POST,"/categorie").hasRole("Admin")		//creer categorie
 			.antMatchers(HttpMethod.GET,"/categories").hasAnyRole("Admin","User")	//afficher categories
 			.antMatchers("/categorie/{id}").hasRole("Admin")		//modifier supprimer categorie
 			//unite de mesure
@@ -100,7 +101,7 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers(HttpMethod.GET,"/unitesDeMesure").hasAnyRole("Admin","User")	//afficher unite
 			.antMatchers("/uniteDeMesure/{id}").hasRole("Admin")		//modifier supprimer unite
 			//fournisseur
-			.antMatchers(HttpMethod.POST,"/fournisseur").hasRole("Admin")		//creer fournisseurs
+			.antMatchers(HttpMethod.POST,"/fournisseur").hasRole("Admin")		//creer fournisseur
 			.antMatchers(HttpMethod.GET,"/fournisseurs").hasAnyRole("Admin","User")	//afficher fournisseurs
 			.antMatchers("/fournisseur/{id}").hasRole("Admin")		//modifier supprimer fournisseur
 			//emplacement
@@ -109,26 +110,33 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/emplacement/{id}").hasRole("Admin")		//modifier supprimer emplacement
 
 			//produit
-			.antMatchers(HttpMethod.POST,"/produit").hasRole("User")	//creer produits
+			.antMatchers(HttpMethod.POST,"/produit").hasRole("User")	//creer produit
+			.antMatchers(HttpMethod.GET,"/produits").hasRole("User")	//afficher produits
 			.antMatchers(HttpMethod.GET,"/stock/{id}/produits").hasRole("User")	//afficher produits par stock
+			.antMatchers(HttpMethod.GET,"/categorie/{id}/produits").hasRole("User")	//afficher produits par categorie
+			.antMatchers(HttpMethod.GET,"/fournisseur/{id}/produits").hasRole("User")	//afficher produits par fournisseur
+			.antMatchers(HttpMethod.GET,"/UniteDeMesure/{id}/produits").hasRole("User")	//afficher produits par uniteDeMesure
 			.antMatchers(HttpMethod.GET,"/produits/{nom}").hasRole("User")	//afficher meme produit dans differents stocks
 			.antMatchers("/produit/{id}").hasRole("User")		//modifier supprimer produit
 			
 			//stock
-			.antMatchers(HttpMethod.POST,"/stock").hasRole("User")		//creer stocks
-			.antMatchers(HttpMethod.GET,"/emplacement/{id}/stock").hasRole("User")	//afficher stock
+			.antMatchers(HttpMethod.POST,"/stock").hasRole("User")		//creer stock
+			.antMatchers(HttpMethod.GET,"/stocks").hasRole("User")	//afficher les stocks
+			.antMatchers(HttpMethod.GET,"/emplacement/{id}/stock").hasRole("User")	//afficher stock d'un emplacement
 			.antMatchers("/stock/{id}").hasRole("User")		//modifier supprimer stock	
 			
 			//inventaire
-			.antMatchers(HttpMethod.POST,"/inventaire").hasRole("User")		//creer inventaires
-			.antMatchers(HttpMethod.GET,"/stock/{id}/inventaires").hasAnyRole("User")	//afficher inventaires
+			.antMatchers(HttpMethod.POST,"/inventaire").hasRole("User")		//creer inventaire
+			.antMatchers(HttpMethod.GET,"/stock/{id}/inventaires").hasAnyRole("User")	//afficher inventaires d'un stock
+			.antMatchers(HttpMethod.GET,"/inventaires").hasAnyRole("User")	//afficher inventaires
 			
 			//mouvement
-			.antMatchers(HttpMethod.POST,"/mouvement").hasRole("User")		//creer mouvements
-			.antMatchers(HttpMethod.GET,"/stock/mouvements").hasAnyRole("User")	//afficher mouvements
+			.antMatchers(HttpMethod.POST,"/mouvement").hasRole("User")		//creer mouvement
+			.antMatchers(HttpMethod.GET,"/stock/{id}/mouvements").hasAnyRole("User")	//afficher mouvements d'un stock
+			.antMatchers(HttpMethod.GET,"/mouvements").hasAnyRole("User")	//afficher mouvements
 
 			//utilisateur
-			.antMatchers(HttpMethod.POST,"/utilisateur").hasRole("Admin")		//creer utilisateurs
+			.antMatchers(HttpMethod.POST,"/utilisateur").hasRole("Admin")		//creer utilisateur
 			.antMatchers(HttpMethod.GET,"/utilisateurs").hasRole("Admin")	//afficher utilisateurs
 			.antMatchers("/utilisateur/{id}").hasRole("Admin")		//modifier supprimer utilisateur
 			.antMatchers(HttpMethod.GET,"/utilisateur/{username}").hasRole("Admin")		//chercher utilisateur par username

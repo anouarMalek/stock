@@ -1,7 +1,12 @@
 package com.backend.services;
 
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toCollection;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,8 +49,10 @@ public class FournisseurService {
 		
 		if(produits.isEmpty()) throw new NotFoundException("Aucun produit de cette fournisseur n'existe");
 		
+		List<Produit> unique = produits.stream()
+                .collect(collectingAndThen(toCollection(() -> new TreeSet<>(comparing(Produit::getNom))),ArrayList::new));
 		
-		return produits;
+		return unique;
 
 	}
 	
