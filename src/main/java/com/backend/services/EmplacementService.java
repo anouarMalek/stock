@@ -52,14 +52,33 @@ public class EmplacementService {
 	}
 	
 	
-	//Si le stock est créé 
-		public boolean isStockCreated(Long id) throws NotFoundException
+	//les emplacements ayant un stock
+	public List<Emplacement> stockCreated() throws NotFoundException
+	{
+		List<Emplacement> emplacements = new ArrayList<Emplacement>();
+		//Stock iterator= new Stock();
+		List<Stock> stocks = stockService.getStocks(null);
+		for (Stock stock : stocks) {
+			emplacements.add(stock.getEmplacement());
+		}
+		
+		return emplacements;
+	}
+	
+	
+	//les emplacements sans stock
+		public List<Emplacement> stockNotCreated() throws NotFoundException
 		{
-			Emplacement emplacement = rep.findById(id)
-					.orElseThrow(() -> new NotFoundException("Aucun emplacement avec l'id "+id+" n'existe"));
-				
-			if(emplacement.getStock()!= null) return true;
-			return false;
+			List<Emplacement> emplacements = getEmplacements(null);
+			
+			for (Emplacement emplacement : emplacements) {
+				if(emplacement.getStock()!=null) emplacements.remove(emplacement);
+				if(emplacements.size()==0) break;
+			}
+			
+			if(emplacements.isEmpty()) throw new NotFoundException("Aucun emplacement trouvé");
+			
+			return emplacements;
 		}
 	
 	

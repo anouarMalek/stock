@@ -53,11 +53,20 @@ public class EmplacementController {
 		 
 	}
 	
-	@GetMapping("/emplacement/{id}/stockExists")
+	@GetMapping("/emplacements/avecStock")
 	@ResponseStatus(HttpStatus.OK)
-	public boolean isStockCreated(@PathVariable(name="id") Long id)  throws NotFoundException
+	public List<Emplacement> stockCreated()  throws NotFoundException
 	{
-		return service.isStockCreated(id);
+		return service.stockCreated();
+		 
+	}
+	
+	
+	@GetMapping("/emplacements/sansStock")
+	@ResponseStatus(HttpStatus.OK)
+	public List<Emplacement> stockNotCreated()  throws NotFoundException
+	{
+		return service.stockNotCreated();
 		 
 	}
 	
