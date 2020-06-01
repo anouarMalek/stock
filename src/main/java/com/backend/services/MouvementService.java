@@ -102,6 +102,7 @@ public class MouvementService {
 		}
 		
 		mouvement.setDate(LocalDateTime.now());
+		mouvement.setProduit(produit2);
 		rep.save(mouvement);
 	}
 	

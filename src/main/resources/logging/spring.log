@@ -3168,3 +3168,40 @@ java.util.ConcurrentModificationException: null
 2020-06-01 11:00:30.678  INFO 22512 --- [http-nio-8081-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
 2020-06-01 11:00:30.679  INFO 22512 --- [http-nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
 2020-06-01 11:00:30.691  INFO 22512 --- [http-nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 11 ms
+2020-06-01 12:07:14.661  INFO 24492 --- [main] com.backend.StockApplication             : Starting StockApplication on DESKTOP-ADCT58V with PID 24492 (C:\Users\DELL\eclipse-workspace\stock\target\classes started by DELL in C:\Users\DELL\eclipse-workspace\stock)
+2020-06-01 12:07:14.666  INFO 24492 --- [main] com.backend.StockApplication             : No active profile set, falling back to default profiles: default
+2020-06-01 12:07:15.782  INFO 24492 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2020-06-01 12:07:15.904  INFO 24492 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 108ms. Found 9 JPA repository interfaces.
+2020-06-01 12:07:17.058  INFO 24492 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8081 (http)
+2020-06-01 12:07:17.070  INFO 24492 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2020-06-01 12:07:17.071  INFO 24492 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.33]
+2020-06-01 12:07:17.181  INFO 24492 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2020-06-01 12:07:17.182  INFO 24492 --- [main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 2460 ms
+2020-06-01 12:07:17.481  INFO 24492 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2020-06-01 12:07:17.562  INFO 24492 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.4.12.Final
+2020-06-01 12:07:17.730  INFO 24492 --- [main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+2020-06-01 12:07:17.844  INFO 24492 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2020-06-01 12:07:18.044  INFO 24492 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2020-06-01 12:07:18.077  INFO 24492 --- [main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+2020-06-01 12:07:19.129  INFO 24492 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2020-06-01 12:07:19.136  INFO 24492 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2020-06-01 12:07:19.624  WARN 24492 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2020-06-01 12:07:20.745  INFO 24492 --- [main] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [springfox.documentation.swagger2.web.Swagger2Controller#getDocumentation(String, HttpServletRequest)]
+2020-06-01 12:07:20.987  INFO 24492 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: any request, [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@464d5365, org.springframework.security.web.context.SecurityContextPersistenceFilter@3a13f663, org.springframework.security.web.header.HeaderWriterFilter@5897aae1, org.springframework.web.filter.CorsFilter@38394dc3, org.springframework.security.web.authentication.logout.LogoutFilter@4bdef487, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@3eadad14, org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter@983050b, org.springframework.security.web.authentication.ui.DefaultLogoutPageGeneratingFilter@2cacd55e, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@71d0b8a4, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@17a77a7e, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@6ad3fbe4, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@2ba9f743, org.springframework.security.web.session.SessionManagementFilter@4aa517c3, org.springframework.security.web.access.ExceptionTranslationFilter@1af82ba8, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@3e839aa3]
+2020-06-01 12:07:21.104  INFO 24492 --- [main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2020-06-01 12:07:21.244  INFO 24492 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2020-06-01 12:07:21.273  INFO 24492 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+2020-06-01 12:07:21.324  INFO 24492 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2020-06-01 12:07:21.524  INFO 24492 --- [main] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: getProduitsUsingGET_1
+2020-06-01 12:07:21.568  INFO 24492 --- [main] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: getProduitsUsingGET_2
+2020-06-01 12:07:21.581  INFO 24492 --- [main] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: getInventairesUsingGET_1
+2020-06-01 12:07:21.583  INFO 24492 --- [main] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: getMouvementsUsingGET_1
+2020-06-01 12:07:21.586  INFO 24492 --- [main] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: getProduitsUsingGET_3
+2020-06-01 12:07:21.601  INFO 24492 --- [main] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: getProduitsUsingGET_4
+2020-06-01 12:07:21.673  INFO 24492 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8081 (http) with context path ''
+2020-06-01 12:07:21.674  INFO 24492 --- [main] com.backend.StockApplication             : Started StockApplication in 7.476 seconds (JVM running for 7.978)
+2020-06-01 12:12:39.948  INFO 24492 --- [http-nio-8081-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2020-06-01 12:12:39.949  INFO 24492 --- [http-nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2020-06-01 12:12:39.964  INFO 24492 --- [http-nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 15 ms
+2020-06-01 12:12:53.557  WARN 24492 --- [http-nio-8081-exec-3] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' not supported]
+2020-06-01 12:14:32.415  WARN 24492 --- [http-nio-8081-exec-9] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' not supported]
