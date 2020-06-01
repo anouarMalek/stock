@@ -6,7 +6,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.backend.entities.Fournisseur;
 import com.backend.entities.Mouvement;
 import com.backend.entities.Produit;
 import com.backend.entities.Stock;
@@ -15,6 +17,7 @@ import com.backend.exceptions.NotFoundException;
 import com.backend.repositories.MouvementRepository;
 
 @Service
+@Transactional
 public class MouvementService {
 	
 	@Autowired
@@ -25,6 +28,9 @@ public class MouvementService {
 	
 	@Autowired
 	StockService stockService;
+	
+	@Autowired
+	FournisseurService fournisseurService;
 	
 
 	//Liste des mouvements
@@ -47,8 +53,12 @@ public class MouvementService {
 	public void addMouvement(Mouvement mouvement) throws NotFoundException
 	{
 		Produit produit = produitService.getProduits(mouvement.getProduit().getId()).get(0);
+		
 		Stock stock = stockService.getStocks(mouvement.getStock().getId()).get(0);
-		Produit produit2=stockService.produit(produit.getNom(),produit.getPrixAchat(), stock.getId());
+		
+		Fournisseur fournisseur = fournisseurService.getFournisseurs(mouvement.getProduit().getFournisseur().getId()).get(0);
+		
+		Produit produit2=stockService.produit(produit.getNom(),fournisseur,mouvement.getProduit().getPrixAchat(), stock.getId());
 		
 		
 		if(produit2!=null)
@@ -56,9 +66,9 @@ public class MouvementService {
 			
 			int quantiteExistante=produit2.getQuantiteEnStock();
 			int quantiteMouvement=mouvement.getQuantite();
-			if(mouvement.getType().equals("ENTREE"))
+			if(mouvement.getType().equals("Entree"))
 				produit2.setQuantiteEnStock(quantiteExistante + quantiteMouvement);
-			else if(mouvement.getType().equals("SORTIE"))
+			else if(mouvement.getType().equals("Sortie"))
 			{
 				if(quantiteExistante >= quantiteMouvement)
 					produit2.setQuantiteEnStock(quantiteExistante - quantiteMouvement);
@@ -73,15 +83,15 @@ public class MouvementService {
 		else
 		{
 			produit2= new Produit();
-			if(mouvement.getType().equals("ENTREE")) 
+			if(mouvement.getType().equals("Entree")) 
 			{
 				produit2.setCategorie(produit.getCategorie());
-				produit2.setFournisseur(produit.getFournisseur());
+				produit2.setFournisseur(fournisseur);
 				produit2.setUniteDeMesure(produit.getUniteDeMesure());
 				produit2.setDescription(produit.getDescription());
 				produit2.setNom(produit.getNom());
 				produit2.setType(produit.getType());
-				produit2.setPrixAchat(produit.getPrixAchat());
+				produit2.setPrixAchat(mouvement.getProduit().getPrixAchat());
 				produit2.setStock(stock);
 				produit2.setQuantiteEnStock(mouvement.getQuantite());
 				produit2.setQuantiteMin(produit.getQuantiteMin());

@@ -5,7 +5,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.backend.entities.Fournisseur;
 import com.backend.entities.Inventaire;
 import com.backend.entities.Mouvement;
 import com.backend.entities.Produit;
@@ -15,10 +17,17 @@ import com.backend.exceptions.NotFoundException;
 import com.backend.repositories.StockRepository;
 
 @Service
+@Transactional
 public class StockService {
 	
 	@Autowired
 	StockRepository rep;
+	
+	@Autowired
+	FournisseurService fournisseurService;
+	
+	@Autowired
+	ProduitService produitService;
 	
 
 	//Liste des stocks
@@ -52,12 +61,12 @@ public class StockService {
 	
 	
 	//Trouver un produit par nom et prix achat
-	public Produit produit(String nom, double prixAchat, Long id)
+	public Produit produit(String nom, Fournisseur fournisseur, double prixAchat, Long id)
 	{
-		
 		List<Produit> produits= getProduits(id);
 		for (Produit produit : produits) {
-			if(produit.getNom().equals(nom) && produit.getPrixAchat()==prixAchat)
+			
+			if(produit.getNom().equals(nom) && fournisseur.getId() == produit.getFournisseur().getId() && produit.getPrixAchat() == prixAchat)
 			{
 				return produit;
 				
@@ -77,8 +86,6 @@ public class StockService {
 			
 			List<Inventaire> inventaires = stock.getInventaires();
 			
-			if(inventaires.isEmpty()) throw new NotFoundException("Aucun inventaire effectué sur ce stock");
-			
 			
 			return inventaires;
 
@@ -91,10 +98,7 @@ public class StockService {
 					Stock stock = rep.findById(id)
 							.orElseThrow(() -> new NotFoundException("Aucun stock avec l'id "+id+" n'existe"));
 					
-					List<Mouvement> mouvements = stock.getMouvements();
-					
-					if(mouvements.isEmpty()) throw new NotFoundException("Aucun mouvement effectué.");
-					
+					List<Mouvement> mouvements = stock.getMouvements();					
 					
 					return mouvements;
 
@@ -140,9 +144,19 @@ public class StockService {
 		
 		Stock stock= rep.findById(id)
 				.orElseThrow(() -> new NotFoundException("Aucun stock avec l'id "+id+" n'existe"));
+		List<Produit> produits= stock.getProduits();
+		if(!produits.isEmpty())
+		{
+			for (Produit produit : produits) {
+				produitService.deleteProduit(produit.getId());
+			}
+		}
 		rep.delete(stock);
 		
 	}
+
+
+
 
 
 }

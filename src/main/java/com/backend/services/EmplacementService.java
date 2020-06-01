@@ -5,18 +5,24 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.entities.Emplacement;
 import com.backend.entities.Stock;
 import com.backend.exceptions.ConflictException;
 import com.backend.exceptions.NotFoundException;
 import com.backend.repositories.EmplacementRepository;
+import com.mysql.cj.Session;
 
 @Service
+@Transactional
 public class EmplacementService {
 	
 	@Autowired
 	EmplacementRepository rep;
+	
+	@Autowired
+	StockService stockService;
 	
 
 	//Liste des emplacements
@@ -44,6 +50,18 @@ public class EmplacementService {
 		if(emplacement.getStock()== null) throw new NotFoundException("Stock pas encore créé pour cette emplacement.");
 		return emplacement.getStock();
 	}
+	
+	
+	//Si le stock est créé 
+		public boolean isStockCreated(Long id) throws NotFoundException
+		{
+			Emplacement emplacement = rep.findById(id)
+					.orElseThrow(() -> new NotFoundException("Aucun emplacement avec l'id "+id+" n'existe"));
+				
+			if(emplacement.getStock()!= null) return true;
+			return false;
+		}
+	
 	
 	
 	//ajouter une emplacement
@@ -83,6 +101,11 @@ public class EmplacementService {
 		
 		Emplacement emplacement= rep.findById(id)
 				.orElseThrow(() -> new NotFoundException("Aucun emplacement avec l'id "+id+" n'existe"));
+		if(emplacement.getStock()!=null)
+		{
+			stockService.deleteStock(emplacement.getStock().getId());
+		}
+		
 		rep.delete(emplacement);
 		
 	}

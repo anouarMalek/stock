@@ -20,6 +20,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 
+import com.backend.entities.Fournisseur;
 import com.backend.entities.Inventaire;
 import com.backend.entities.Produit;
 import com.backend.entities.Stock;
@@ -47,6 +48,9 @@ public class InventaireService {
 	@Autowired
 	StockService stockService;
 	
+	@Autowired
+	FournisseurService fournisseurService;
+	
 	
 
 	//Liste des inventaires
@@ -70,6 +74,7 @@ public class InventaireService {
 		Stock stock = stockService.getStocks(inventaire.getStock().getId()).get(0);
 		LocalDateTime date = inventaire.getDate();
 		List<Produit> produits = stockService.getProduits(stock.getId());
+		Fournisseur fournisseur = new Fournisseur();
 		
 		Font fontTitre=new Font(FontFamily.TIMES_ROMAN,20f,Font.UNDERLINE,BaseColor.RED);
 		Font fontHeader=new Font(FontFamily.HELVETICA,14f,Font.BOLD,BaseColor.BLACK);
@@ -86,14 +91,15 @@ public class InventaireService {
 		
 		
 		
-		PdfPTable table = new PdfPTable(6);
+		PdfPTable table = new PdfPTable(7);
 		table.setWidthPercentage(100);
 		Paragraph h1 = new Paragraph("Produit",fontHeader);
-		Paragraph h2 = new Paragraph("Type",fontHeader);
+		Paragraph h2 = new Paragraph("Fournisseur",fontHeader);
 		Paragraph h3 = new Paragraph("Categorie",fontHeader);
-		Paragraph h4 = new Paragraph("Qte en stock",fontHeader);
-		Paragraph h5 = new Paragraph("Qte totale",fontHeader);
-		Paragraph h6 = new Paragraph("Etat",fontHeader);
+		Paragraph h4 = new Paragraph("Prix Achat",fontHeader);
+		Paragraph h5 = new Paragraph("Qte en stock",fontHeader);
+		Paragraph h6 = new Paragraph("Qte totale",fontHeader);
+		Paragraph h7 = new Paragraph("Etat",fontHeader);
 		
 		
 		table.addCell(new PdfPCell(h1));
@@ -102,18 +108,22 @@ public class InventaireService {
 		table.addCell(new PdfPCell(h4));
 		table.addCell(new PdfPCell(h5));
 		table.addCell(new PdfPCell(h6));
+		table.addCell(new PdfPCell(h7));
 		
 		for (Produit produit : produits) {
 			h1 = new Paragraph(produit.getNom(),fontData);
-			h2 = new Paragraph(produit.getType(),fontData);
+			fournisseur = fournisseurService.getFournisseurs(produit.getFournisseur().getId()).get(0);
+			
+			h2 = new Paragraph(fournisseur.getNom(),fontData);
 			h3 = new Paragraph(produit.getCategorie().getDesignation(),fontData);
-			h4 = new Paragraph(String.valueOf(produit.getQuantiteEnStock()),fontData);
-			h5 = new Paragraph(String.valueOf(produit.getQuantiteTotale()),fontData);
+			h4 = new Paragraph(String.valueOf(produit.getPrixAchat()),fontData);
+			h5 = new Paragraph(String.valueOf(produit.getQuantiteEnStock()),fontData);
+			h6 = new Paragraph(String.valueOf(produit.getQuantiteTotale()),fontData);
 			
 			if(produit.getQuantiteEnStock() < produit.getQuantiteMin())
-				h6 = new Paragraph("En rupture !",fontAlert);
+				h7 = new Paragraph("En rupture !",fontAlert);
 			else
-				h6 = new Paragraph("Suffisant",fontData);
+				h7 = new Paragraph("Suffisant",fontData);
 			
 			table.addCell(new PdfPCell(h1));
 			table.addCell(new PdfPCell(h2));
@@ -121,6 +131,7 @@ public class InventaireService {
 			table.addCell(new PdfPCell(h4));
 			table.addCell(new PdfPCell(h5));
 			table.addCell(new PdfPCell(h6));
+			table.addCell(new PdfPCell(h7));
 				
 		}
 		

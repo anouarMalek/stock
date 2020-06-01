@@ -2,7 +2,6 @@ package com.backend.entities;
 
 
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -34,7 +33,7 @@ public @Data class Emplacement{
 	
 	@JsonIgnore
 	@JoinColumn(name="STOCK_EMP")
-	@OneToOne(fetch = FetchType.LAZY,cascade =  CascadeType.ALL,mappedBy="emplacement")
+	@OneToOne(fetch = FetchType.LAZY,mappedBy="emplacement",orphanRemoval = true)
 	Stock stock;
 
 }

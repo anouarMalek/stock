@@ -53,6 +53,14 @@ public class EmplacementController {
 		 
 	}
 	
+	@GetMapping("/emplacement/{id}/stockExists")
+	@ResponseStatus(HttpStatus.OK)
+	public boolean isStockCreated(@PathVariable(name="id") Long id)  throws NotFoundException
+	{
+		return service.isStockCreated(id);
+		 
+	}
+	
 	
 	
 	//POST

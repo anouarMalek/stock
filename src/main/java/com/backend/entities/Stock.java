@@ -42,6 +42,7 @@ public @Data class Stock{
 	@OneToMany(mappedBy="stock", cascade=CascadeType.ALL)
 	List<Inventaire> inventaires;
 	
+	
 	@JoinColumn(name="EMPLACEMENT_STK", unique=true)
 	@OneToOne
 	Emplacement emplacement;

@@ -10,6 +10,7 @@ import static java.util.stream.Collectors.toCollection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.entities.Produit;
 import com.backend.exceptions.ConflictException;
@@ -31,7 +32,9 @@ public class ProduitService {
 		
 		if(id!=null) 
 			{
-				produits.add(rep.findById(id).orElseThrow(() -> new NotFoundException("Aucun produit avec l'id "+id+" n'existe")));
+				Produit produit = rep.findById(id).orElseThrow(() -> new NotFoundException("Aucun produit avec l'id "+id+" n'existe"));
+				setQuantiteTotale(produit.getNom());
+				produits.add(produit);
 				return produits;
 			}
 		else
@@ -41,7 +44,9 @@ public class ProduitService {
 			
 			List<Produit> unique = produits.stream()
 	                .collect(collectingAndThen(toCollection(() -> new TreeSet<>(comparing(Produit::getNom))),ArrayList::new));
-			
+			for (Produit produit : unique) {
+				setQuantiteTotale(produit.getNom());
+			}
 			return unique;
 		}
 			
