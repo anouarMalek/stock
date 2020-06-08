@@ -3,7 +3,10 @@ package com.backend.services;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +15,7 @@ import com.backend.entities.Inventaire;
 import com.backend.entities.Mouvement;
 import com.backend.entities.Produit;
 import com.backend.entities.Stock;
+import com.backend.entities.Utilisateur;
 import com.backend.exceptions.ConflictException;
 import com.backend.exceptions.NotFoundException;
 import com.backend.repositories.StockRepository;
@@ -29,7 +33,12 @@ public class StockService {
 	@Autowired
 	ProduitService produitService;
 	
+	@Autowired
+	UtilisateurService utilisateurService;
 
+	Logger logger = LoggerFactory.getLogger(StockService.class.getName());
+	
+	
 	//Liste des stocks
 	public List<Stock> getStocks(Long id) throws NotFoundException
 	{
@@ -114,6 +123,13 @@ public class StockService {
 			throw new ConflictException("Un stock avec l'emplacement "+stock.getEmplacement().getDesignation()+" existe déjà.");
 		
 		rep.save(stock);
+		
+		
+		
+		
+		Utilisateur user = utilisateurService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		logger.debug("L'utilisateur "+user.getNom()+" "+user.getPrenom()+" ayant le Username "+user.getUsername()+" a créé un stock à l'emplacement "+stock.getEmplacement().getDesignation());
+		
 	}
 	
 	
@@ -134,6 +150,9 @@ public class StockService {
 		
 		rep.save(updated);
 		
+		Utilisateur user = utilisateurService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		logger.debug("L'utilisateur "+user.getNom()+" "+user.getPrenom()+" ayant le Username "+user.getUsername()+" a modifié le stock "+updated.getEmplacement().getDesignation());
+		
 	}
 
 	
@@ -152,6 +171,9 @@ public class StockService {
 			}
 		}
 		rep.delete(stock);
+		
+		Utilisateur user = utilisateurService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		logger.debug("L'utilisateur "+user.getNom()+" "+user.getPrenom()+" ayant le Username "+user.getUsername()+" a supprimé le stock de l'emplacement "+stock.getEmplacement().getDesignation());
 		
 	}
 

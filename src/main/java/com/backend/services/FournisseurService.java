@@ -8,11 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.backend.entities.Fournisseur;
 import com.backend.entities.Produit;
+import com.backend.entities.Utilisateur;
 import com.backend.exceptions.*;
 import com.backend.repositories.FournisseurRepository;
 
@@ -22,6 +26,10 @@ public class FournisseurService {
 	@Autowired
 	FournisseurRepository rep;
 	
+	@Autowired
+	UtilisateurService utilisateurService;
+	
+	Logger logger = LoggerFactory.getLogger(FournisseurService.class.getName());
 
 	//Liste des fournisseurs
 	public List<Fournisseur> getFournisseurs(Long id) throws NotFoundException
@@ -65,6 +73,9 @@ public class FournisseurService {
 			throw new ConflictException("Un fournisseur avec la nom "+fournisseur.getNom()+" existe déjà.");
 		
 		rep.save(fournisseur);
+		
+		Utilisateur user = utilisateurService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		logger.debug("L'administrateur "+user.getNom()+" "+user.getPrenom()+" ayant le Username "+user.getUsername()+" a créé le fournisseur "+fournisseur.getNom());
 	}
 	
 	
@@ -86,6 +97,9 @@ public class FournisseurService {
 		
 		rep.save(updated);
 		
+		Utilisateur user = utilisateurService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		logger.debug("L'administrateur "+user.getNom()+" "+user.getPrenom()+" ayant le Username "+user.getUsername()+" a modifié le fournisseur "+updated.getNom());
+		
 	}
 
 	
@@ -97,6 +111,9 @@ public class FournisseurService {
 		Fournisseur fournisseur= rep.findById(id)
 				.orElseThrow(() -> new NotFoundException("Aucun fournisseur avec l'id "+id+" n'existe"));
 		rep.delete(fournisseur);
+		
+		Utilisateur user = utilisateurService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		logger.debug("L'administrateur "+user.getNom()+" "+user.getPrenom()+" ayant le Username "+user.getUsername()+" a supprimé le fournisseur "+fournisseur.getNom());
 		
 	}
 

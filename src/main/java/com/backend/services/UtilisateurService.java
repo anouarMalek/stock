@@ -3,7 +3,10 @@ package com.backend.services;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +22,8 @@ public class UtilisateurService {
 	
 	@Autowired
 	EmailServiceImpl emailService;
+	
+	Logger logger = LoggerFactory.getLogger(UtilisateurService.class.getName());
 	
 	
 	public Utilisateur getByUsername(String username)
@@ -67,6 +72,13 @@ public class UtilisateurService {
 			emailService.sendAuthenticationInfos(utilisateur);
 		}
 		
+		Utilisateur user = getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		String role= utilisateur.getRole();
+		if(role.equals("Admin")) role = "administrateur";
+		if(role.equals("User")) role = "utilisateur";
+			logger.debug("L'administrateur "+user.getNom()+" "+user.getPrenom()+" ayant le Username "+user.getUsername()+" a créé l'"+role
+				+ " avec le username"+utilisateur.getUsername());
+		
 	}
 	
 	public void updateUtilisateur(Long id,Utilisateur utilisateur)
@@ -105,6 +117,14 @@ public class UtilisateurService {
 		}
 		rep.save(updated);
 		
+		Utilisateur user = getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		String role= utilisateur.getRole();
+		if(role.equals("Admin")) role = "administrateur";
+		if(role.equals("User")) role = "utilisateur";
+			logger.debug("L'administrateur "+user.getNom()+" "+user.getPrenom()+" ayant le Username "+user.getUsername()+" a modifié l'"+role
+				+ " avec le username"+updated.getUsername());
+		
+		
 	}
 
 	public void removeUtilisateur(Long id)
@@ -113,6 +133,14 @@ public class UtilisateurService {
 		//vérifier l'existence de l'utilisateur
 		Utilisateur utilisateur=rep.findById(id).orElseThrow(() -> new NotFoundException("Aucun utilisateur avec l'id "+id+" n'est trouvé"));
 		rep.delete(utilisateur);
+		
+		Utilisateur user = getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		String role= utilisateur.getRole();
+		if(role.equals("Admin")) role = "administrateur";
+		if(role.equals("User")) role = "utilisateur";
+			logger.debug("L'administrateur "+user.getNom()+" "+user.getPrenom()+" ayant le Username "+user.getUsername()+" a supprimé l'"+role
+				+ " avec le username"+utilisateur.getUsername());
+		
 	}
 
 

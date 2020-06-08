@@ -4,7 +4,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +15,7 @@ import com.backend.entities.Fournisseur;
 import com.backend.entities.Mouvement;
 import com.backend.entities.Produit;
 import com.backend.entities.Stock;
+import com.backend.entities.Utilisateur;
 import com.backend.exceptions.ConflictException;
 import com.backend.exceptions.NotFoundException;
 import com.backend.repositories.MouvementRepository;
@@ -31,6 +35,11 @@ public class MouvementService {
 	
 	@Autowired
 	FournisseurService fournisseurService;
+	
+	@Autowired
+	UtilisateurService utilisateurService;
+	
+	Logger logger = LoggerFactory.getLogger(MouvementService.class.getName());
 	
 
 	//Liste des mouvements
@@ -104,6 +113,15 @@ public class MouvementService {
 		mouvement.setDate(LocalDateTime.now());
 		mouvement.setProduit(produit2);
 		rep.save(mouvement);
+		
+		Utilisateur user = utilisateurService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		
+		if(mouvement.getType().equals("Entree"))
+			logger.debug("L'utilisateur "+user.getNom()+" "+user.getPrenom()+" ayant le Username "+user.getUsername()+" a effectué une entrée du produit "
+					+produit2.getNom()+" au stock "+stock.getEmplacement().getDesignation()+" à la date: "+mouvement.getDate());
+		if(mouvement.getType().equals("Sortie"))
+			logger.debug("L'utilisateur "+user.getNom()+" "+user.getPrenom()+" ayant le Username "+user.getUsername()+" a effectué une sortie du produit "
+					+produit2.getNom()+" du stock "+stock.getEmplacement().getDesignation()+" à la date: "+mouvement.getDate());
 	}
 	
 

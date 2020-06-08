@@ -8,14 +8,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.backend.entities.Categorie;
 import com.backend.entities.Produit;
+import com.backend.entities.Utilisateur;
 import com.backend.exceptions.ConflictException;
 import com.backend.exceptions.NotFoundException;
 import com.backend.repositories.CategorieRepository;
+
+import lombok.experimental.UtilityClass;
 
 @Service
 public class CategorieService {
@@ -23,6 +29,10 @@ public class CategorieService {
 	@Autowired
 	CategorieRepository rep;
 	
+	@Autowired
+	UtilisateurService utilisateurService;
+	
+	Logger logger = LoggerFactory.getLogger(CategorieService.class.getName());
 
 	//Liste des categories
 	public List<Categorie> getCategories(Long id) throws NotFoundException
@@ -58,6 +68,9 @@ public class CategorieService {
 			throw new ConflictException("Une categorie avec la designation "+categorie.getDesignation()+" existe déjà.");
 		
 		rep.save(categorie);
+		
+		Utilisateur user = utilisateurService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		logger.debug("L'administrateur "+user.getNom()+" "+user.getPrenom()+" ayant le Username "+user.getUsername()+" a créé la catégorie "+categorie.getDesignation());
 	}
 	
 	
@@ -78,6 +91,9 @@ public class CategorieService {
 		
 		rep.save(updated);
 		
+		Utilisateur user = utilisateurService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		logger.debug("L'administrateur "+user.getNom()+" "+user.getPrenom()+" ayant le Username "+user.getUsername()+" a modifié la catégorie "+updated.getDesignation());
+		
 	}
 
 	
@@ -90,6 +106,8 @@ public class CategorieService {
 				.orElseThrow(() -> new NotFoundException("Aucune catégorie avec l'id "+id+" n'existe"));
 		rep.delete(categorie);
 		
+		Utilisateur user = utilisateurService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		logger.debug("L'administrateur "+user.getNom()+" "+user.getPrenom()+" ayant le Username "+user.getUsername()+" a supprimé la catégorie "+categorie.getDesignation());
 	}
 
 }

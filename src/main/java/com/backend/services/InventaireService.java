@@ -14,9 +14,12 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 
@@ -24,6 +27,7 @@ import com.backend.entities.Fournisseur;
 import com.backend.entities.Inventaire;
 import com.backend.entities.Produit;
 import com.backend.entities.Stock;
+import com.backend.entities.Utilisateur;
 import com.backend.exceptions.NotFoundException;
 import com.backend.repositories.InventaireRepository;
 import com.itextpdf.text.BaseColor;
@@ -50,6 +54,11 @@ public class InventaireService {
 	
 	@Autowired
 	FournisseurService fournisseurService;
+	
+	@Autowired
+	UtilisateurService utilisateurService;
+	
+	Logger logger = LoggerFactory.getLogger(InventaireService.class.getName());
 	
 	
 
@@ -154,6 +163,9 @@ public class InventaireService {
 		
 		
 		rep.save(inventaire);
+		
+		Utilisateur user = utilisateurService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		logger.debug("L'utilisateur "+user.getNom()+" "+user.getPrenom()+" ayant le Username "+user.getUsername()+" a effectué un inventaire du stock "+stock.getEmplacement().getDesignation()+" à la date: "+date);
 		
 	}
 

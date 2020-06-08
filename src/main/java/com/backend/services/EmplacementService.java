@@ -3,16 +3,19 @@ package com.backend.services;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.entities.Emplacement;
 import com.backend.entities.Stock;
+import com.backend.entities.Utilisateur;
 import com.backend.exceptions.ConflictException;
 import com.backend.exceptions.NotFoundException;
 import com.backend.repositories.EmplacementRepository;
-import com.mysql.cj.Session;
 
 @Service
 @Transactional
@@ -23,6 +26,11 @@ public class EmplacementService {
 	
 	@Autowired
 	StockService stockService;
+	
+	@Autowired
+	UtilisateurService utilisateurService;
+	
+	Logger logger = LoggerFactory.getLogger(EmplacementService.class.getName());
 	
 
 	//Liste des emplacements
@@ -90,6 +98,9 @@ public class EmplacementService {
 			throw new ConflictException("Un emplacement avec la designation "+emplacement.getDesignation()+" existe déjà.");
 		
 		rep.save(emplacement);
+		
+		Utilisateur user = utilisateurService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		logger.debug("L'administrateur "+user.getNom()+" "+user.getPrenom()+" ayant le Username "+user.getUsername()+" a créé l'emplacement "+emplacement.getDesignation());
 	}
 	
 	
@@ -110,6 +121,9 @@ public class EmplacementService {
 		
 		rep.save(updated);
 		
+		Utilisateur user = utilisateurService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		logger.debug("L'administrateur "+user.getNom()+" "+user.getPrenom()+" ayant le Username "+user.getUsername()+" a modifié l'emplacement "+updated.getDesignation());
+		
 	}
 
 	
@@ -126,6 +140,9 @@ public class EmplacementService {
 		}
 		
 		rep.delete(emplacement);
+		
+		Utilisateur user = utilisateurService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		logger.debug("L'administrateur "+user.getNom()+" "+user.getPrenom()+" ayant le Username "+user.getUsername()+" a supprimé l'emplacement "+emplacement.getDesignation());
 		
 	}
 

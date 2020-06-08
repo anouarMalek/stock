@@ -8,11 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.backend.entities.Produit;
 import com.backend.entities.UniteDeMesure;
+import com.backend.entities.Utilisateur;
 import com.backend.exceptions.ConflictException;
 import com.backend.exceptions.NotFoundException;
 import com.backend.repositories.UniteDeMesureRepository;
@@ -23,6 +27,11 @@ public class UniteDeMesureService {
 	
 	@Autowired
 	UniteDeMesureRepository rep;
+	
+	@Autowired
+	UtilisateurService utilisateurService;
+	
+	Logger logger = LoggerFactory.getLogger(UniteDeMesureService.class.getName());
 	
 
 	//Liste des unités de mesure
@@ -66,6 +75,10 @@ public class UniteDeMesureService {
 			throw new ConflictException("Une unité de mesure avec la designation "+uniteDeMesure.getDesignation()+" existe déjà.");
 		
 		rep.save(uniteDeMesure);
+		
+		Utilisateur user = utilisateurService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+			logger.debug("L'administrateur "+user.getNom()+" "+user.getPrenom()+" ayant le Username "+user.getUsername()+" a créé l'unité de mesure "+uniteDeMesure.getDesignation());
+		
 	}
 	
 	
@@ -86,6 +99,9 @@ public class UniteDeMesureService {
 		
 		rep.save(updated);
 		
+		Utilisateur user = utilisateurService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		logger.debug("L'administrateur "+user.getNom()+" "+user.getPrenom()+" ayant le Username "+user.getUsername()+" a modifié l'unité de mesure "+updated.getDesignation());
+		
 	}
 
 	
@@ -97,6 +113,9 @@ public class UniteDeMesureService {
 		UniteDeMesure uniteDeMesure= rep.findById(id)
 				.orElseThrow(() -> new NotFoundException("Aucune unité de mesure avec l'id "+id+" n'existe"));
 		rep.delete(uniteDeMesure);
+		
+		Utilisateur user = utilisateurService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		logger.debug("L'administrateur "+user.getNom()+" "+user.getPrenom()+" ayant le Username "+user.getUsername()+" a supprimé l'unité de mesure "+uniteDeMesure.getDesignation());
 		
 	}
 
