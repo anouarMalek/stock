@@ -33,6 +33,6 @@ public @Data class UniteDeMesure {
 	
 	@JsonIgnore
 	@Column(name="PRODUITS_UDM")
-	@OneToMany(mappedBy="uniteDeMesure",cascade=CascadeType.ALL)
+	@OneToMany(mappedBy="uniteDeMesure", cascade=CascadeType.ALL)
 	List<Produit> produits;
 }

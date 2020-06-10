@@ -6,6 +6,7 @@ import static java.util.stream.Collectors.toCollection;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.TreeSet;
 
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.backend.entities.Categorie;
 import com.backend.entities.Produit;
 import com.backend.entities.UniteDeMesure;
 import com.backend.entities.Utilisateur;
@@ -112,11 +114,26 @@ public class UniteDeMesureService {
 		
 		UniteDeMesure uniteDeMesure= rep.findById(id)
 				.orElseThrow(() -> new NotFoundException("Aucune unité de mesure avec l'id "+id+" n'existe"));
+		List<Produit> produits = getProduits(id);
+		UniteDeMesure inconnue = rep.findByDesignation("Non spécifiée").get();
+		for (Produit produit : produits) {
+			produit.setUniteDeMesure(inconnue);
+		}
+		uniteDeMesure.setProduits(null);
+		rep.save(uniteDeMesure);
 		rep.delete(uniteDeMesure);
 		
 		Utilisateur user = utilisateurService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 		logger.debug("L'administrateur "+user.getNom()+" "+user.getPrenom()+" ayant le Username "+user.getUsername()+" a supprimé l'unité de mesure "+uniteDeMesure.getDesignation());
 		
+	}
+
+
+	public Optional<UniteDeMesure> getUniteDeMesureByDesignation(String designation)
+	{
+		Optional<UniteDeMesure> uniteDeMesure = rep.findByDesignation(designation);
+		
+		return uniteDeMesure;
 	}
 
 }

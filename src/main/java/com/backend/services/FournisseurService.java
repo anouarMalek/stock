@@ -6,6 +6,7 @@ import static java.util.stream.Collectors.toCollection;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.TreeSet;
 
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.backend.entities.Categorie;
 import com.backend.entities.Fournisseur;
 import com.backend.entities.Produit;
 import com.backend.entities.Utilisateur;
@@ -110,11 +112,26 @@ public class FournisseurService {
 		
 		Fournisseur fournisseur= rep.findById(id)
 				.orElseThrow(() -> new NotFoundException("Aucun fournisseur avec l'id "+id+" n'existe"));
+		List<Produit> produits = getProduits(id);
+		Fournisseur inconnu = rep.findByNom("Non spécifié").get();
+		for (Produit produit : produits) {
+			produit.setFournisseur(inconnu);
+		}
+		fournisseur.setProduits(null);
+		rep.save(fournisseur);
 		rep.delete(fournisseur);
 		
 		Utilisateur user = utilisateurService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 		logger.debug("L'administrateur "+user.getNom()+" "+user.getPrenom()+" ayant le Username "+user.getUsername()+" a supprimé le fournisseur "+fournisseur.getNom());
 		
+	}
+
+
+
+	public Optional<Fournisseur> getFournisseurByNom(String nom) {
+		
+		Optional<Fournisseur> fournisseur = rep.findByNom(nom);
+		return fournisseur;
 	}
 
 }

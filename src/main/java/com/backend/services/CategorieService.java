@@ -6,6 +6,7 @@ import static java.util.stream.Collectors.toCollection;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.TreeSet;
 
 import org.slf4j.Logger;
@@ -44,6 +45,14 @@ public class CategorieService {
 			if(categories.isEmpty()) throw new NotFoundException("Aucune catégorie trouvée");
 		
 		return categories;
+	}
+	
+	
+	public Optional<Categorie> getCategorieByDesignation(String designation)
+	{
+		Optional<Categorie> categorie = rep.findByDesignation(designation);
+		
+		return categorie;
 	}
 	
 	
@@ -104,6 +113,13 @@ public class CategorieService {
 		
 		Categorie categorie= rep.findById(id)
 				.orElseThrow(() -> new NotFoundException("Aucune catégorie avec l'id "+id+" n'existe"));
+		List<Produit> produits = getProduits(id);
+		Categorie inconnue = rep.findByDesignation("Non spécifiée").get();
+		for (Produit produit : produits) {
+			produit.setCategorie(inconnue);
+		}
+		categorie.setProduits(null);
+		rep.save(categorie);
 		rep.delete(categorie);
 		
 		Utilisateur user = utilisateurService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());

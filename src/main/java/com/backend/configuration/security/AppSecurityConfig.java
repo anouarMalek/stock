@@ -20,8 +20,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.backend.entities.Utilisateur;
-import com.backend.exceptions.NotFoundException;
-import com.backend.services.UtilisateurService;
+import com.backend.repositories.UtilisateurRepository;
 import com.google.common.collect.ImmutableList;
 
 
@@ -30,7 +29,7 @@ import com.google.common.collect.ImmutableList;
 public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
-	UtilisateurService utilisateurService;
+	UtilisateurRepository rep;
 
 	UserPrincipalDetailsService service;
 
@@ -40,18 +39,18 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 		this.service = service;
 	}
 
-	@SuppressWarnings("unused")
 	@PostConstruct
 	public void init() {
 
-		try {
-			List<Utilisateur>  currentUserList = utilisateurService.getUtilisateurs(null);
-		} catch (NotFoundException e) {
+
+		List<Utilisateur>  currentUserList = rep.findAll();
+		if(currentUserList.isEmpty())
+		{
 			Utilisateur    utilisateur    = new Utilisateur();
 			utilisateur.setUsername("admin");
-			utilisateur.setPassword("admin");
+			utilisateur.setPassword(new BCryptPasswordEncoder().encode("admin"));
 			utilisateur.setRole("Admin");
-			utilisateurService.addUtilisateur(utilisateur);
+			rep.save(utilisateur);
 
 		}
 
