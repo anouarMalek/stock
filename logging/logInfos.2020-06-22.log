@@ -1,0 +1,12 @@
+2020-06-22 16:10:28,313 INFO com.backend.StockApplication [main] Starting StockApplication on DESKTOP-ADCT58V with PID 17516 (C:\Users\DELL\eclipse-workspace\stock\target\classes started by DELL in C:\Users\DELL\eclipse-workspace\stock)
+2020-06-22 16:10:28,316 DEBUG com.backend.StockApplication [main] Running with Spring Boot v2.2.6.RELEASE, Spring v5.2.5.RELEASE
+2020-06-22 16:10:28,316 INFO com.backend.StockApplication [main] No active profile set, falling back to default profiles: default
+2020-06-22 16:10:34,540 INFO com.backend.StockApplication [main] Started StockApplication in 6.561 seconds (JVM running for 7.075)
+2020-06-22 16:12:05,440 INFO com.backend.StockApplication [main] Starting StockApplication on DESKTOP-ADCT58V with PID 11432 (C:\Users\DELL\eclipse-workspace\stock\target\classes started by DELL in C:\Users\DELL\eclipse-workspace\stock)
+2020-06-22 16:12:05,442 DEBUG com.backend.StockApplication [main] Running with Spring Boot v2.2.6.RELEASE, Spring v5.2.5.RELEASE
+2020-06-22 16:12:05,442 INFO com.backend.StockApplication [main] No active profile set, falling back to default profiles: default
+2020-06-22 16:12:11,360 INFO com.backend.StockApplication [main] Started StockApplication in 6.248 seconds (JVM running for 6.782)
+2020-06-22 16:15:56,660 INFO com.backend.StockApplication [main] Starting StockApplication on DESKTOP-ADCT58V with PID 6980 (C:\Users\DELL\eclipse-workspace\stock\target\classes started by DELL in C:\Users\DELL\eclipse-workspace\stock)
+2020-06-22 16:15:56,663 DEBUG com.backend.StockApplication [main] Running with Spring Boot v2.2.6.RELEASE, Spring v5.2.5.RELEASE
+2020-06-22 16:15:56,663 INFO com.backend.StockApplication [main] No active profile set, falling back to default profiles: default
+2020-06-22 16:16:02,472 INFO com.backend.StockApplication [main] Started StockApplication in 6.149 seconds (JVM running for 6.677)

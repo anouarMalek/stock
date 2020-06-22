@@ -1,13 +1,21 @@
 package com.backend.services;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import com.backend.entities.Fournisseur;
@@ -49,10 +57,14 @@ public class InventaireService {
 	
 
 	//Liste des inventaires
-	public List<Inventaire> getInventaires() throws NotFoundException
+	public List<Inventaire> getInventaires(Long id) throws NotFoundException
 	{
+		List<Inventaire> inventaires = new ArrayList<Inventaire>();
+		if(id==null)
+			inventaires = rep.findAll();
+		else
+			inventaires.add(rep.findById(id).orElseThrow(() -> new NotFoundException("Aucun inventaire avec l'id "+id+" trouvé.")));
 		
-		List<Inventaire> inventaires = rep.findAll();
 		if(inventaires.isEmpty()) throw new NotFoundException("Aucun inventaire trouvé");		
 		
 		return inventaires;
@@ -72,7 +84,7 @@ public class InventaireService {
 		Fournisseur fournisseur = new Fournisseur();
 		
 		Font fontTitre=new Font(FontFamily.TIMES_ROMAN,20f,Font.UNDERLINE,BaseColor.RED);
-		Font fontHeader=new Font(FontFamily.HELVETICA,14f,Font.BOLD,BaseColor.BLACK);
+		Font fontHeader=new Font(FontFamily.HELVETICA,12f,Font.BOLD,BaseColor.BLACK);
 		Font fontData=new Font(FontFamily.HELVETICA,12f,Font.NORMAL,BaseColor.BLACK);
 		Font fontAlert=new Font(FontFamily.HELVETICA,12f,Font.BOLD,BaseColor.RED);
 		Paragraph titre = new Paragraph("Inventaire du Stock de: "+stock.getEmplacement().getDesignation(),fontTitre);
@@ -133,7 +145,7 @@ public class InventaireService {
 		
 		Document document= new Document();
 		PdfWriter.getInstance(document, new FileOutputStream
-		("C:\\Users\\DELL\\eclipse-workspace\\stock\\src\\main\\resources\\inventaire\\stock_"+stock.getId()+"_"+date.toString().replace(':', '-')+".pdf"));
+		("C:\\Users\\DELL\\eclipse-workspace\\stock\\src\\main\\resources\\inventaire\\stock_"+stock.getId()+"_"+date.withNano(0).toString().replace(':', '-')+".pdf"));
 		
 		document.open();
 		
@@ -153,6 +165,29 @@ public class InventaireService {
 		Utilisateur user = utilisateurService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 		logger.debug("L'utilisateur "+user.getNom()+" "+user.getPrenom()+" ayant le Username "+user.getUsername()+" a effectué un inventaire du stock "+stock.getEmplacement().getDesignation()+" à la date: "+date);
 		
+	}
+	
+	
+	public ResponseEntity<InputStreamResource> getInventairePDF(Long id) throws IOException
+	{
+		Inventaire inventaire = getInventaires(id).get(0);
+		Stock stock = stockService.getStocks(inventaire.getStock().getId()).get(0);
+		
+		String fileName = "stock_"+stock.getId()+"_"+inventaire.getDate().toString().replace(':', '-')+".pdf";
+		
+		ClassPathResource pdfFile = new ClassPathResource("/inventaire/"+fileName);
+		 
+		
+		
+		  ResponseEntity<InputStreamResource> response = new ResponseEntity<InputStreamResource>(
+		    new InputStreamResource(pdfFile.getInputStream()), HttpStatus.OK);
+		  
+		  Utilisateur user = utilisateurService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		logger.debug("L'utilisateur "+user.getNom()+" "+user.getPrenom()+" ayant le Username "+user.getUsername()+" a téléchargé le fichier "+fileName+" à la date: "+LocalDateTime.now());
+			
+		  
+		  return response;
+
 	}
 
 

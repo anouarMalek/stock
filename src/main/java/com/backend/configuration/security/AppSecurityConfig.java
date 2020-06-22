@@ -137,8 +137,8 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 		//inventaire
 		.antMatchers(HttpMethod.POST,"/inventaire").hasRole("User")		//creer inventaire
 		.antMatchers(HttpMethod.GET,"/stock/{id}/inventaires").hasRole("User")	//afficher inventaires d'un stock
-		.antMatchers(HttpMethod.GET,"/inventaires").hasAnyRole("User")	//afficher inventaires
-
+		.antMatchers(HttpMethod.GET,"/inventaires").hasRole("User")	//afficher inventaires
+		.antMatchers(HttpMethod.GET,"/inventairePDF/{id}").hasRole("User")	//afficher le pdf de l'inventaire
 		//mouvement
 		.antMatchers(HttpMethod.POST,"/mouvement").hasRole("User")		//creer mouvement
 		.antMatchers(HttpMethod.GET,"/stock/{id}/mouvements").hasAnyRole("User")	//afficher mouvements d'un stock

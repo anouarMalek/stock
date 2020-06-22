@@ -1,4 +1,4 @@
-package com.backend.configuration;
+package com.backend.configuration.documentation;
 
 import javax.annotation.PostConstruct;
 
