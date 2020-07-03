@@ -136,7 +136,7 @@ public class EmplacementService {
 				.orElseThrow(() -> new NotFoundException("Aucun emplacement avec l'id "+id+" n'existe"));
 		if(emplacement.getStock()!=null)
 		{
-			stockService.deleteStock(emplacement.getStock().getId());
+			stockService.rep.deleteById(emplacement.getStock().getId());
 		}
 		
 		rep.delete(emplacement);

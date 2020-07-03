@@ -78,7 +78,7 @@ public class ProduitService {
 		public void setQuantiteTotale(String nom)
 		{
 			List<Produit> produits = rep.findAllByNom(nom);
-			if(produits.isEmpty()) throw new NotFoundException("Aucun produit avec le nom "+nom+" trouvé.");
+			if(!produits.isEmpty()) {
 			int quantiteTotale=0;
 			for (Produit produit : produits) {
 				quantiteTotale+=produit.getQuantiteEnStock();
@@ -88,7 +88,7 @@ public class ProduitService {
 				produit.setQuantiteTotale(quantiteTotale);
 				rep.save(produit);
 			}
-			
+			}
 			
 		}
 		

@@ -112,6 +112,16 @@ public class FournisseurService {
 		
 		Fournisseur fournisseur= rep.findById(id)
 				.orElseThrow(() -> new NotFoundException("Aucun fournisseur avec l'id "+id+" n'existe"));
+		boolean aucunProduit = false;
+		try
+		{
+			List<Produit> produits = getProduits(id);
+		}catch(NotFoundException e)
+		{
+			aucunProduit = true;
+		}
+		if(aucunProduit==false)
+		{
 		List<Produit> produits = getProduits(id);
 		Fournisseur inconnu = rep.findByNom("Non spécifié").get();
 		for (Produit produit : produits) {
@@ -119,6 +129,8 @@ public class FournisseurService {
 		}
 		fournisseur.setProduits(null);
 		rep.save(fournisseur);
+		}
+		
 		rep.delete(fournisseur);
 		
 		Utilisateur user = utilisateurService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());

@@ -113,13 +113,25 @@ public class CategorieService {
 		
 		Categorie categorie= rep.findById(id)
 				.orElseThrow(() -> new NotFoundException("Aucune catégorie avec l'id "+id+" n'existe"));
-		List<Produit> produits = getProduits(id);
-		Categorie inconnue = rep.findByDesignation("Non spécifiée").get();
-		for (Produit produit : produits) {
-			produit.setCategorie(inconnue);
+		boolean aucunProduit = false;
+		try
+		{
+			List<Produit> produits = getProduits(id);
+		}catch(NotFoundException e)
+		{
+			aucunProduit = true;
 		}
-		categorie.setProduits(null);
-		rep.save(categorie);
+		if(aucunProduit==false)
+		{
+			List<Produit> produits = getProduits(id);
+			Categorie inconnue = rep.findByDesignation("Non spécifiée").get();
+			for (Produit produit : produits) {
+				produit.setCategorie(inconnue);
+			}
+			categorie.setProduits(null);
+			rep.save(categorie);
+		}
+		
 		rep.delete(categorie);
 		
 		Utilisateur user = utilisateurService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());

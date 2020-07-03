@@ -114,6 +114,16 @@ public class UniteDeMesureService {
 		
 		UniteDeMesure uniteDeMesure= rep.findById(id)
 				.orElseThrow(() -> new NotFoundException("Aucune unité de mesure avec l'id "+id+" n'existe"));
+		boolean aucunProduit = false;
+		try
+		{
+			List<Produit> produits = getProduits(id);
+		}catch(NotFoundException e)
+		{
+			aucunProduit = true;
+		}
+		if(aucunProduit==false)
+		{
 		List<Produit> produits = getProduits(id);
 		UniteDeMesure inconnue = rep.findByDesignation("Non spécifiée").get();
 		for (Produit produit : produits) {
@@ -121,6 +131,8 @@ public class UniteDeMesureService {
 		}
 		uniteDeMesure.setProduits(null);
 		rep.save(uniteDeMesure);
+		}
+		
 		rep.delete(uniteDeMesure);
 		
 		Utilisateur user = utilisateurService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
