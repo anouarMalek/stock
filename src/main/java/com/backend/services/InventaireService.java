@@ -3,6 +3,8 @@ package com.backend.services;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.PathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -142,10 +145,11 @@ public class InventaireService {
 				
 		}
 		
+		Path path = FileSystems.getDefault().getPath("").toAbsolutePath();
 		
 		Document document= new Document();
 		PdfWriter.getInstance(document, new FileOutputStream
-		("C:\\Users\\DELL\\eclipse-workspace\\stock\\src\\main\\resources\\inventaire\\stock_"+stock.getId()+"_"+date.withNano(0).toString().replace(':', '-')+".pdf"));
+		(path+"\\src\\main\\resources\\inventaire\\stock_"+stock.getId()+"_"+date.withNano(0).toString().replace(':', '-')+".pdf"));
 		
 		document.open();
 		
@@ -175,7 +179,8 @@ public class InventaireService {
 		
 		String fileName = "stock_"+stock.getId()+"_"+inventaire.getDate().toString().replace(':', '-')+".pdf";
 		
-		ClassPathResource pdfFile = new ClassPathResource("/inventaire/"+fileName);
+		Path path = FileSystems.getDefault().getPath("").toAbsolutePath();
+		PathResource pdfFile = new PathResource(path+"\\src\\main\\resources\\inventaire\\"+fileName);
 		 
 		
 		
